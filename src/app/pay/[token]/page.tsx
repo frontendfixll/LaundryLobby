@@ -107,15 +107,16 @@ export default function PaymentPage() {
         return
       }
 
-      // Fallback: Use Stripe.js redirectToCheckout
+      // Fallback: Use Stripe.js redirectToCheckout (with type assertion for compatibility)
       const stripe = await stripePromise
       if (stripe && data.data.sessionId) {
-        const { error: stripeError } = await stripe.redirectToCheckout({
+        // Type assertion to handle Stripe version compatibility
+        const result = await (stripe as any).redirectToCheckout({
           sessionId: data.data.sessionId
         })
         
-        if (stripeError) {
-          setError(stripeError.message || 'Failed to redirect to checkout')
+        if (result?.error) {
+          setError(result.error.message || 'Failed to redirect to checkout')
           setProcessing(false)
         }
       } else {
