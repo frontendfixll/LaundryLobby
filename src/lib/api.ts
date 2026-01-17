@@ -15,7 +15,19 @@ export interface LeadFormData {
   phone: string
   businessName: string
   businessType: 'small_laundry' | 'chain' | 'dry_cleaner' | 'other'
+  interestedPlan?: string
+  expectedMonthlyOrders?: string
+  currentBranches?: number
+  address?: {
+    line1?: string
+    line2?: string
+    city?: string
+    state?: string
+    pincode?: string
+    country?: string
+  }
   message?: string
+  source?: 'website' | 'pricing_page' | 'referral' | 'other'
 }
 
 export interface ApiResponse<T = unknown> {
