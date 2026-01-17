@@ -26,16 +26,6 @@ const demoPortals = [
     textColor: 'text-red-600 dark:text-red-400',
   },
   {
-    name: 'Sales Portal',
-    description: 'Sales team dashboard for lead management and conversion',
-    features: ['Lead tracking', 'Sales analytics', 'Customer onboarding', 'Performance metrics'],
-    url: process.env.NEXT_PUBLIC_SALES_URL || 'http://localhost:3005',
-    icon: TrendingUp,
-    color: 'from-green-500 to-green-600',
-    bgColor: 'bg-green-50 dark:bg-green-900/20',
-    textColor: 'text-green-600 dark:text-green-400',
-  },
-  {
     name: 'Demo Tenant Portal',
     description: 'Example of a tenant-specific laundry portal',
     features: ['Branded experience', 'Custom domain', 'Tenant-specific features', 'Multi-tenancy'],

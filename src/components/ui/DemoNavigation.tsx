@@ -19,13 +19,6 @@ const demoApps = [
     color: 'bg-red-500 hover:bg-red-600',
   },
   {
-    name: 'Sales Portal',
-    description: 'Sales team management dashboard',
-    url: process.env.NEXT_PUBLIC_SALES_URL || 'http://localhost:3005',
-    icon: TrendingUp,
-    color: 'bg-green-500 hover:bg-green-600',
-  },
-  {
     name: 'Demo Tenant',
     description: 'Example tenant laundry portal',
     url: `https://demo-laundry.${process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'laundrypro.com'}`,
