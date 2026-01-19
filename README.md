@@ -163,7 +163,7 @@ Edit `tailwind.config.ts` for:
 
 - **Backend API**: [laundry-backend](../backend)
 - **Admin Panel**: [laundry-admin](../frontend)
-- **SuperAdmin Panel**: [laundry-superadmin](../frontend-superadmin)
+- **Sales Panel**: [laundry-sales](../frontend-sales)
 
 ## 📄 License
 

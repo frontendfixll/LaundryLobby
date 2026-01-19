@@ -7,7 +7,7 @@ import { Menu, X, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
-import { DemoNavigation } from '@/components/ui/DemoNavigation'
+
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -29,7 +29,6 @@ export function Header() {
 
   return (
     <>
-      <DemoNavigation />
       <header className="sticky top-0 z-50 w-full border-b border-[rgb(var(--border))] bg-[rgb(var(--background))]/95 backdrop-blur supports-[backdrop-filter]:bg-[rgb(var(--background))]/80 transition-colors duration-300">
       <nav className="container-marketing flex h-16 items-center justify-between">
         {/* Logo */}

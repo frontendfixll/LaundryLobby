@@ -1,0 +1,292 @@
+'use client'
+
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Check, X, Info, ChevronDown, ChevronUp } from 'lucide-react'
+import { Button } from '@/components/ui'
+
+interface BillingPlan {
+  _id: string
+  name: string
+  displayName: string
+  price: {
+    monthly: number
+    yearly: number
+  }
+  features: {
+    max_orders: number
+    max_staff: number
+    max_customers: number
+    max_branches: number
+    custom_domain: boolean
+    advanced_analytics: boolean
+    api_access: boolean
+    white_label: boolean
+    priority_support: boolean
+    custom_branding: boolean
+    campaigns: boolean
+    loyalty_points: boolean
+    inventory_management: boolean
+    multi_location: boolean
+    custom_reports: boolean
+    mobile_app: boolean
+    sms_notifications: boolean
+    email_marketing: boolean
+    pos_integration: boolean
+    accounting_integration: boolean
+  }
+}
+
+interface FeatureComparisonProps {
+  plans: BillingPlan[]
+  billingCycle: 'monthly' | 'yearly'
+}
+
+interface FeatureCategory {
+  name: string
+  icon: string
+  features: {
+    key: string
+    name: string
+    description: string
+    type: 'boolean' | 'limit'
+  }[]
+}
+
+const featureCategories: FeatureCategory[] = [
+  {
+    name: 'Usage Limits',
+    icon: '📊',
+    features: [
+      { key: 'max_orders', name: 'Orders per month', description: 'Maximum number of orders you can process monthly', type: 'limit' },
+      { key: 'max_staff', name: 'Staff members', description: 'Number of staff accounts you can create', type: 'limit' },
+      { key: 'max_customers', name: 'Customer database', description: 'Maximum customers in your database', type: 'limit' },
+      { key: 'max_branches', name: 'Branch locations', description: 'Number of physical locations you can manage', type: 'limit' },
+    ]
+  },
+  {
+    name: 'Core Features',
+    icon: '🚀',
+    features: [
+      { key: 'mobile_app', name: 'Mobile App', description: 'Dedicated mobile app for customers and staff', type: 'boolean' },
+      { key: 'inventory_management', name: 'Inventory Management', description: 'Track supplies, chemicals, and equipment', type: 'boolean' },
+      { key: 'multi_location', name: 'Multi-location Support', description: 'Manage multiple branches from one dashboard', type: 'boolean' },
+      { key: 'custom_reports', name: 'Custom Reports', description: 'Create personalized business reports', type: 'boolean' },
+    ]
+  },
+  {
+    name: 'Branding & Customization',
+    icon: '🎨',
+    features: [
+      { key: 'custom_branding', name: 'Custom Branding', description: 'Add your logo and brand colors', type: 'boolean' },
+      { key: 'custom_domain', name: 'Custom Domain', description: 'Use your own domain (e.g., yourlaundry.com)', type: 'boolean' },
+      { key: 'white_label', name: 'White Label Solution', description: 'Remove LaundryLobby branding completely', type: 'boolean' },
+    ]
+  },
+  {
+    name: 'Marketing & Growth',
+    icon: '📢',
+    features: [
+      { key: 'campaigns', name: 'Marketing Campaigns', description: 'Create and manage promotional campaigns', type: 'boolean' },
+      { key: 'loyalty_points', name: 'Loyalty Program', description: 'Reward customers with points and discounts', type: 'boolean' },
+      { key: 'sms_notifications', name: 'SMS Notifications', description: 'Send automated SMS updates to customers', type: 'boolean' },
+      { key: 'email_marketing', name: 'Email Marketing', description: 'Send newsletters and promotional emails', type: 'boolean' },
+    ]
+  },
+  {
+    name: 'Analytics & Reporting',
+    icon: '📈',
+    features: [
+      { key: 'advanced_analytics', name: 'Advanced Analytics', description: 'Detailed business insights and trends', type: 'boolean' },
+      { key: 'api_access', name: 'API Access', description: 'Integrate with third-party tools and services', type: 'boolean' },
+    ]
+  },
+  {
+    name: 'Integrations & Support',
+    icon: '🛠️',
+    features: [
+      { key: 'pos_integration', name: 'POS Integration', description: 'Connect with point-of-sale systems', type: 'boolean' },
+      { key: 'accounting_integration', name: 'Accounting Integration', description: 'Sync with QuickBooks, Tally, etc.', type: 'boolean' },
+      { key: 'priority_support', name: 'Priority Support', description: '24/7 priority customer support', type: 'boolean' },
+    ]
+  }
+]
+
+export function FeatureComparison({ plans, billingCycle }: FeatureComparisonProps) {
+  const [expandedCategories, setExpandedCategories] = useState<string[]>(['Usage Limits'])
+
+  // Sort plans in correct order and filter out unwanted plans
+  const sortedPlans = [...plans]
+    .filter(plan => ['free', 'basic', 'pro', 'enterprise'].includes(plan.name.toLowerCase()))
+    .sort((a, b) => {
+      const order = { free: 0, basic: 1, pro: 2, enterprise: 3 }
+      const aName = a.name.toLowerCase() as keyof typeof order
+      const bName = b.name.toLowerCase() as keyof typeof order
+      return (order[aName] || 999) - (order[bName] || 999)
+    })
+
+  const toggleCategory = (categoryName: string) => {
+    setExpandedCategories(prev => 
+      prev.includes(categoryName) 
+        ? prev.filter(name => name !== categoryName)
+        : [...prev, categoryName]
+    )
+  }
+
+  const formatLimit = (value: number | undefined) => {
+    if (value === undefined || value === null) return '0'
+    if (value === -1) return 'Unlimited'
+    return value.toLocaleString()
+  }
+
+  const formatPrice = (amount: number) => {
+    if (amount === 0) return 'Free'
+    if (amount === -1) return 'Custom'
+    return `₹${amount.toLocaleString()}`
+  }
+
+  const getFeatureValue = (plan: BillingPlan, featureKey: string, type: 'boolean' | 'limit') => {
+    const value = (plan.features as any)?.[featureKey]
+    
+    if (type === 'limit') {
+      return formatLimit(value)
+    }
+    
+    return value === true
+  }
+
+  // If no valid plans found, don't render the component
+  if (sortedPlans.length === 0) {
+    return null
+  }
+
+  return (
+    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-600 to-green-600 text-white p-6">
+        <h3 className="text-2xl font-bold mb-2">📋 Complete Feature Comparison</h3>
+        <p className="text-blue-100">Compare all features across our plans to find the perfect fit</p>
+      </div>
+
+      {/* Plans Header */}
+      <div className="overflow-x-auto">
+        <div className="min-w-full">
+          <div className={`grid gap-4 p-6 bg-gray-50 dark:bg-gray-800 border-b`} style={{ gridTemplateColumns: `200px repeat(${sortedPlans.length}, 1fr)` }}>
+            <div className="font-semibold text-gray-900 dark:text-white">Features</div>
+            {sortedPlans.map((plan) => (
+              <div key={plan._id} className="text-center">
+                <div className="font-bold text-lg text-gray-900 dark:text-white">{plan.displayName}</div>
+                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                  {formatPrice(billingCycle === 'yearly' ? plan.price.yearly : plan.price.monthly)}
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  {plan.price.monthly > 0 ? `/${billingCycle === 'yearly' ? 'year' : 'month'}` : ''}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Feature Categories */}
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            {featureCategories.map((category, categoryIndex) => {
+              const isExpanded = expandedCategories.includes(category.name)
+              
+              return (
+                <motion.div
+                  key={category.name}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: categoryIndex * 0.1 }}
+                >
+                  {/* Category Header */}
+                  <button
+                    onClick={() => toggleCategory(category.name)}
+                    className="w-full px-6 py-4 flex items-center justify-between bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{category.icon}</span>
+                      <span className="font-semibold text-gray-900 dark:text-white">{category.name}</span>
+                    </div>
+                    {isExpanded ? (
+                      <ChevronUp className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                    )}
+                  </button>
+
+                  {/* Category Features */}
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      {category.features.map((feature, featureIndex) => (
+                        <div
+                          key={feature.key}
+                          className={`grid gap-4 p-4 ${
+                            featureIndex % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'
+                          }`}
+                          style={{ gridTemplateColumns: `200px repeat(${sortedPlans.length}, 1fr)` }}
+                        >
+                          {/* Feature Name & Description */}
+                          <div className="flex items-start gap-2">
+                            <div>
+                              <div className="font-medium text-gray-900 dark:text-white">{feature.name}</div>
+                              <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                {feature.description}
+                              </div>
+                            </div>
+                            <Info className="h-4 w-4 text-gray-400 flex-shrink-0 mt-0.5" />
+                          </div>
+
+                          {/* Feature Values for Each Plan */}
+                          {sortedPlans.map((plan) => {
+                            const value = getFeatureValue(plan, feature.key, feature.type)
+                            
+                            return (
+                              <div key={plan._id} className="flex justify-center items-center">
+                                {feature.type === 'boolean' ? (
+                                  value ? (
+                                    <Check className="h-5 w-5 text-green-500" />
+                                  ) : (
+                                    <X className="h-5 w-5 text-gray-300" />
+                                  )
+                                ) : (
+                                  <span className="font-medium text-gray-900 dark:text-white">
+                                    {value}
+                                  </span>
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </motion.div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Footer CTA */}
+      <div className="p-6 bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20">
+        <div className="text-center">
+          <h4 className="font-bold text-lg text-gray-900 dark:text-white mb-2">
+            🤔 Still not sure which plan is right for you?
+          </h4>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
+            Get a personalized recommendation based on your business needs
+          </p>
+          <Button size="lg" className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700">
+            💬 Talk to Our Experts
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, Clock } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui'
 import { LeadForm } from '@/components/contact'
+import { PlanBenefits } from '@/components/shared'
 
 const contactInfo = [
   {
@@ -125,6 +126,11 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+
+      {/* Plan Benefits Section */}
+      {preselectedPlan && (
+        <PlanBenefits selectedPlan={preselectedPlan} />
+      )}
     </>
   )
 }
