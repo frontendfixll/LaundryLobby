@@ -112,7 +112,7 @@ export async function fetchMarketplaceAddOns(filters: AddOnFilters = {}): Promis
     console.error('❌ Failed to fetch add-ons:', error)
     
     // Return error instead of mock data - let the UI handle the error state
-    throw new Error(`Failed to fetch add-ons: ${error.message}`)
+    throw new Error(`Failed to fetch add-ons: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
 }
 
