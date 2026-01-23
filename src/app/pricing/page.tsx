@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowRight, Sparkles, Users, TrendingUp, Shield } from 'lucide-react'
+import { ArrowRight, Sparkles, Users, TrendingUp, Shield, Package, Database, Smartphone, Lock, Target, Building, Megaphone, MessageSquare } from 'lucide-react'
 import { Button } from '@/components/ui'
 import { VideoHero } from '@/components/shared'
 import { PricingSlider, FeatureComparison } from '@/components/pricing'
@@ -163,7 +163,7 @@ export default function PricingPage() {
               <div className="mb-16">
                 <div className="text-center mb-12">
                   <h2 className="text-3xl font-bold text-[rgb(var(--foreground))] mb-4">
-                    🎯 What's Included in Every Plan
+                    What's Included in Every Plan
                   </h2>
                   <p className="text-lg text-[rgb(var(--foreground-muted))] max-w-2xl mx-auto">
                     All plans include our core laundry management features. Higher plans unlock advanced capabilities.
@@ -172,25 +172,25 @@ export default function PricingPage() {
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <FeatureCard
-                    icon="🏪"
+                    icon={<Package className="h-8 w-8 text-blue-500" />}
                     title="Order Management"
                     description="Complete order tracking from pickup to delivery"
                     included="All Plans"
                   />
                   <FeatureCard
-                    icon="👥"
+                    icon={<Database className="h-8 w-8 text-green-500" />}
                     title="Customer Database"
                     description="Manage customer information and preferences"
                     included="All Plans"
                   />
                   <FeatureCard
-                    icon="📱"
+                    icon={<Smartphone className="h-8 w-8 text-purple-500" />}
                     title="Mobile Access"
                     description="Access your dashboard from any device"
                     included="All Plans"
                   />
                   <FeatureCard
-                    icon="🔒"
+                    icon={<Lock className="h-8 w-8 text-amber-500" />}
                     title="Secure & Reliable"
                     description="Bank-level security with 99.9% uptime"
                     included="All Plans"
@@ -202,6 +202,51 @@ export default function PricingPage() {
               <div className="mb-16">
                 <FeatureComparison plans={plans} billingCycle={billingCycle} />
               </div>
+
+              {/* Add-ons Section */}
+              <div className="mb-16">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl font-bold text-[rgb(var(--foreground))] mb-4">
+                    Enhance Your Plan with Add-ons
+                  </h2>
+                  <p className="text-lg text-[rgb(var(--foreground-muted))] max-w-2xl mx-auto">
+                    Need extra features or capacity? Browse our marketplace of professional add-ons to customize your plan exactly how you want it.
+                  </p>
+                </div>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                  <AddOnPreviewCard
+                    icon={<Building className="h-8 w-8 text-blue-500" />}
+                    title="Extra Branch"
+                    description="Add additional branch locations to expand your business"
+                    price="₹499/month"
+                    popular={true}
+                  />
+                  <AddOnPreviewCard
+                    icon={<Megaphone className="h-8 w-8 text-orange-500" />}
+                    title="Campaign Manager"
+                    description="Create promotional campaigns and boost customer engagement"
+                    price="₹799/month"
+                    popular={true}
+                  />
+                  <AddOnPreviewCard
+                    icon={<MessageSquare className="h-8 w-8 text-green-500" />}
+                    title="SMS Pack (1000)"
+                    description="Send SMS notifications to customers for order updates"
+                    price="₹300 one-time"
+                    popular={false}
+                  />
+                </div>
+
+                <div className="text-center">
+                  <Link href="/addons">
+                    <Button size="lg" variant="outline" className="group">
+                      Browse All Add-ons
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </>
           )}
 
@@ -209,7 +254,7 @@ export default function PricingPage() {
           <div className="mb-16">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-[rgb(var(--foreground))] mb-4">
-                🚀 Why Choose LaundryLobby?
+                Why Choose LaundryLobby?
               </h2>
               <p className="text-lg text-[rgb(var(--foreground-muted))] max-w-2xl mx-auto">
                 Join thousands of laundry businesses that have transformed their operations
@@ -221,25 +266,25 @@ export default function PricingPage() {
                 icon={<TrendingUp className="h-8 w-8 text-green-500" />}
                 title="Increase Revenue"
                 description="Average 30% revenue increase in first 6 months"
-                stat="30% ↗️"
+                stat="30% ↗"
               />
               <BenefitCard
                 icon={<Users className="h-8 w-8 text-blue-500" />}
                 title="Happy Customers"
                 description="Improve customer satisfaction with better service"
-                stat="95% 😊"
+                stat="95%"
               />
               <BenefitCard
                 icon={<Sparkles className="h-8 w-8 text-purple-500" />}
                 title="Save Time"
                 description="Automate routine tasks and focus on growth"
-                stat="5hrs/day ⏰"
+                stat="5hrs/day"
               />
               <BenefitCard
                 icon={<Shield className="h-8 w-8 text-amber-500" />}
                 title="Reduce Errors"
                 description="Minimize mistakes with automated processes"
-                stat="90% ✅"
+                stat="90%"
               />
             </div>
           </div>
@@ -248,7 +293,7 @@ export default function PricingPage() {
           <div className="text-center mb-16">
             <div className="bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 rounded-2xl p-8">
               <h3 className="text-2xl font-bold text-[rgb(var(--foreground))] mb-4">
-                🏢 Need a Custom Enterprise Solution?
+                Need a Custom Enterprise Solution?
               </h3>
               <p className="text-[rgb(var(--foreground-muted))] mb-6 max-w-2xl mx-auto">
                 For large chains, franchises, or businesses with unique requirements, we offer custom enterprise solutions with dedicated support, custom integrations, and flexible pricing.
@@ -256,12 +301,12 @@ export default function PricingPage() {
               <div className="flex flex-wrap justify-center gap-4">
                 <Link href="/contact?plan=enterprise">
                   <Button size="lg" className="bg-gradient-to-r from-primary-600 to-secondary-600">
-                    💼 Contact Sales
+                    Contact Sales
                   </Button>
                 </Link>
                 <Link href="/features">
                   <Button size="lg" variant="outline">
-                    📋 View All Features
+                    View All Features
                   </Button>
                 </Link>
               </div>
@@ -283,13 +328,13 @@ export default function PricingPage() {
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link href="/contact">
                 <Button size="lg" className="group">
-                  🚀 Request a Demo
+                  Request a Demo
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
               <Link href="/contact?plan=free">
                 <Button size="lg" variant="outline">
-                  💡 Start Free Trial
+                  Start Free Trial
                 </Button>
               </Link>
             </div>
@@ -301,14 +346,14 @@ export default function PricingPage() {
 }
 
 function FeatureCard({ icon, title, description, included }: {
-  icon: string
+  icon: React.ReactNode
   title: string
   description: string
   included: string
 }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-      <div className="text-3xl mb-4">{icon}</div>
+      <div className="mb-4">{icon}</div>
       <h3 className="font-semibold text-[rgb(var(--foreground))] mb-2">{title}</h3>
       <p className="text-sm text-[rgb(var(--foreground-muted))] mb-3">{description}</p>
       <span className="text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 px-2 py-1 rounded-full">
@@ -330,6 +375,37 @@ function BenefitCard({ icon, title, description, stat }: {
       <h3 className="font-semibold text-[rgb(var(--foreground))] mb-2">{title}</h3>
       <p className="text-sm text-[rgb(var(--foreground-muted))] mb-3">{description}</p>
       <div className="text-lg font-bold text-primary-600 dark:text-primary-400">{stat}</div>
+    </div>
+  )
+}
+
+function AddOnPreviewCard({ icon, title, description, price, popular }: {
+  icon: React.ReactNode
+  title: string
+  description: string
+  price: string
+  popular: boolean
+}) {
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
+      {popular && (
+        <div className="flex justify-end mb-2">
+          <span className="text-xs bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 px-2 py-1 rounded-full">
+            Popular
+          </span>
+        </div>
+      )}
+      <div className="mb-4">{icon}</div>
+      <h3 className="font-semibold text-[rgb(var(--foreground))] mb-2">{title}</h3>
+      <p className="text-sm text-[rgb(var(--foreground-muted))] mb-4">{description}</p>
+      <div className="flex items-center justify-between">
+        <span className="text-lg font-bold text-primary-600 dark:text-primary-400">{price}</span>
+        <Link href="/addons">
+          <Button size="sm" variant="outline">
+            View Details
+          </Button>
+        </Link>
+      </div>
     </div>
   )
 }

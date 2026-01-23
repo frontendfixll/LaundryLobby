@@ -219,12 +219,23 @@ export function PricingPreview() {
               <p className="text-[rgb(var(--foreground-muted))] mb-6">
                 Need more details? Compare all features and find the perfect plan for your business.
               </p>
-              <Link href="/pricing">
-                <Button size="lg" variant="outline" className="group">
-                  📋 View All Plans & Features
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </Link>
+              <div className="flex flex-wrap justify-center gap-4 mb-6">
+                <Link href="/pricing">
+                  <Button size="lg" variant="outline" className="group">
+                    📋 View All Plans & Features
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+                <Link href="/addons">
+                  <Button size="lg" variant="outline" className="group">
+                    🛒 Browse Add-ons
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+              </div>
+              <p className="text-sm text-[rgb(var(--foreground-muted))]">
+                💡 <strong>Pro Tip:</strong> Start with any plan and add features later with our marketplace add-ons
+              </p>
             </motion.div>
           </>
         )}
