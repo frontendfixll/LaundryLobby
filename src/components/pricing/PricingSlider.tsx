@@ -5,6 +5,8 @@ import { motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Check, X, Zap, Building2, Rocket, Crown, Star } from 'lucide-react'
 import { Button } from '@/components/ui'
 import Link from 'next/link'
+import { DirectCheckout } from './DirectCheckout'
+import { QuickCheckoutModal } from './QuickCheckoutModal'
 
 interface BillingPlan {
   _id: string
@@ -54,26 +56,26 @@ const planIcons: Record<string, typeof Zap> = {
 }
 
 const planColors: Record<string, { bg: string; border: string; badge: string; gradient: string }> = {
-  free: { 
-    bg: 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900', 
+  free: {
+    bg: 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900',
     border: 'border-gray-200 dark:border-gray-700',
     badge: 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300',
     gradient: 'from-gray-400 to-gray-600'
   },
-  basic: { 
-    bg: 'bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20', 
+  basic: {
+    bg: 'bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20',
     border: 'border-blue-200 dark:border-blue-800',
     badge: 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300',
     gradient: 'from-blue-400 to-blue-600'
   },
-  pro: { 
-    bg: 'bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20', 
+  pro: {
+    bg: 'bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20',
     border: 'border-purple-300 dark:border-purple-700',
     badge: 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300',
     gradient: 'from-purple-400 to-purple-600'
   },
-  enterprise: { 
-    bg: 'bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20', 
+  enterprise: {
+    bg: 'bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20',
     border: 'border-amber-300 dark:border-amber-700',
     badge: 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300',
     gradient: 'from-amber-400 to-amber-600'
@@ -82,6 +84,8 @@ const planColors: Record<string, { bg: string; border: string; badge: string; gr
 
 export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [showQuickModal, setShowQuickModal] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState<BillingPlan | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   // Filter and sort plans in correct order: free, basic, pro, enterprise
@@ -109,6 +113,11 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
   const getYearlySavings = (plan: BillingPlan) => {
     if (plan.price.monthly === 0 || plan.price.yearly === 0) return 0
     return Math.round((1 - plan.price.yearly / (plan.price.monthly * 12)) * 100)
+  }
+
+  const handleQuickBuy = (plan: BillingPlan) => {
+    setSelectedPlan(plan)
+    setShowQuickModal(true)
   }
 
   const scrollToIndex = (index: number) => {
@@ -159,7 +168,7 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
 
       {/* Plans Display */}
       <div className={`${showAsSlider ? 'lg:grid lg:grid-cols-4 lg:gap-6' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'}`}>
-        <div 
+        <div
           ref={scrollRef}
           className={`${showAsSlider ? 'flex gap-6 overflow-x-auto scrollbar-hide pb-4 lg:contents' : 'contents'}`}
           style={showAsSlider ? { scrollbarWidth: 'none', msOverflowStyle: 'none' } : {}}
@@ -176,9 +185,8 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`relative rounded-2xl border-2 ${colors.border} ${colors.bg} p-6 flex flex-col transition-all duration-300 ${showAsSlider ? 'min-w-[300px] max-w-[300px] lg:min-w-0 lg:max-w-none' : ''} hover:shadow-xl hover:scale-105 ${
-                  isPopular ? 'ring-2 ring-primary-500 dark:ring-primary-400 transform scale-105' : ''
-                }`}
+                className={`relative rounded-2xl border-2 ${colors.border} ${colors.bg} p-6 flex flex-col transition-all duration-300 ${showAsSlider ? 'min-w-[300px] max-w-[300px] lg:min-w-0 lg:max-w-none' : ''} hover:shadow-xl hover:scale-105 ${isPopular ? 'ring-2 ring-primary-500 dark:ring-primary-400 transform scale-105' : ''
+                  }`}
               >
                 {/* Popular Badge */}
                 {isPopular && (
@@ -196,11 +204,11 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
                     <Icon className="h-4 w-4" />
                     <span className="text-sm font-medium">{plan.displayName}</span>
                   </div>
-                  
+
                   {plan.description && (
                     <p className="text-sm text-[rgb(var(--foreground-muted))] mb-4">{plan.description}</p>
                   )}
-                  
+
                   <div className="mt-4">
                     <span className="text-4xl font-bold text-[rgb(var(--foreground))]">
                       {formatPrice(billingCycle === 'yearly' ? plan.price.yearly : plan.price.monthly)}
@@ -211,7 +219,7 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
                       </span>
                     )}
                   </div>
-                  
+
                   {billingCycle === 'yearly' && savings > 0 && (
                     <p className="text-sm text-green-600 dark:text-green-400 mt-1 font-medium">
                       💰 Save {savings}% with yearly billing
@@ -265,16 +273,30 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
                   <FeatureRow label="Multi-location" enabled={plan.features?.multi_location ?? false} />
                 </div>
 
-                {/* CTA Button */}
-                <Link href={`/contact?plan=${plan.name}`} className="mt-auto">
-                  <Button 
-                    className={`w-full ${isPopular ? 'bg-gradient-to-r ' + colors.gradient + ' hover:shadow-lg' : ''}`}
-                    variant={isPopular ? 'primary' : 'outline'}
-                    size="lg"
-                  >
-                    {plan.price.monthly === 0 ? '🚀 Start Free' : '💼 Get Started'}
-                  </Button>
-                </Link>
+                {/* CTA Buttons */}
+                <div className="space-y-3 mt-auto">
+                  {/* Direct Checkout Button */}
+                  <DirectCheckout
+                    planName={plan.name}
+                    planDisplayName={plan.displayName}
+                    billingCycle={billingCycle}
+                    price={billingCycle === 'yearly' ? plan.price.yearly : plan.price.monthly}
+                    isPopular={isPopular}
+                  />
+                  
+                  {/* Alternative: Contact Sales for paid plans */}
+                  {plan.price.monthly > 0 && (
+                    <Link href={`/contact?plan=${plan.name}`} className="block">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full text-xs"
+                      >
+                        Or contact sales
+                      </Button>
+                    </Link>
+                  )}
+                </div>
               </motion.div>
             )
           })}
@@ -288,14 +310,26 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
             <button
               key={index}
               onClick={() => scrollToIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === currentIndex 
-                  ? 'bg-primary-600 w-6' 
+              className={`w-2 h-2 rounded-full transition-all ${index === currentIndex
+                  ? 'bg-primary-600 w-6'
                   : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400'
-              }`}
+                }`}
             />
           ))}
         </div>
+      )}
+
+      {/* Quick Checkout Modal */}
+      {selectedPlan && (
+        <QuickCheckoutModal
+          isOpen={showQuickModal}
+          onClose={() => setShowQuickModal(false)}
+          planName={selectedPlan.name}
+          planDisplayName={selectedPlan.displayName}
+          billingCycle={billingCycle}
+          price={billingCycle === 'yearly' ? selectedPlan.price.yearly : selectedPlan.price.monthly}
+          features={selectedPlan.features}
+        />
       )}
     </div>
   )

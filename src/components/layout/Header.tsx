@@ -14,6 +14,7 @@ const navigation = [
   { name: 'Features', href: '/features' },
   { name: 'Pricing', href: '/pricing' },
   { name: 'Add-ons', href: '/addons' },
+  { name: 'Blog', href: '/blog' },
   { name: 'Contact', href: '/contact' },
 ]
 

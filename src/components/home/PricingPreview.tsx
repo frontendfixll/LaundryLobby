@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Check, ArrowRight, Zap, Building2, Rocket, Crown } from 'lucide-react'
 import { Button } from '@/components/ui'
+import { DirectCheckout } from '../pricing/DirectCheckout'
 import { mockBillingPlans } from '@/lib/mockData'
 
 interface BillingPlan {
@@ -42,6 +43,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
 export function PricingPreview() {
   const [plans, setPlans] = useState<BillingPlan[]>([])
   const [loading, setLoading] = useState(true)
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
 
   useEffect(() => {
     fetchPlans()
@@ -52,14 +54,14 @@ export function PricingPreview() {
       console.log('🔍 Fetching plans from:', `${API_URL}/public/billing/plans`);
       const response = await fetch(`${API_URL}/public/billing/plans`)
       console.log('📡 Response status:', response.status);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
+
       const data = await response.json()
       console.log('✅ API Response received:', data);
-      
+
       if (data.success && data.data?.plans) {
         // Show only first 3 plans for preview
         setPlans(data.data.plans.slice(0, 3))
@@ -91,7 +93,7 @@ export function PricingPreview() {
 
   const getKeyFeatures = (plan: BillingPlan) => {
     const features = []
-    
+
     if (plan.features?.max_orders) {
       features.push(`${formatLimit(plan.features.max_orders)} orders/month`)
     }
@@ -107,7 +109,7 @@ export function PricingPreview() {
     if (plan.features?.priority_support) {
       features.push('Priority support')
     }
-    
+
     return features.slice(0, 4) // Show max 4 features
   }
 
@@ -115,7 +117,7 @@ export function PricingPreview() {
     <section className="section-padding bg-[rgb(var(--background-secondary))] transition-colors duration-300">
       <div className="container-marketing">
         <div className="text-center mb-12">
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -126,7 +128,7 @@ export function PricingPreview() {
               Pricing
             </span>
           </motion.h2>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -134,6 +136,38 @@ export function PricingPreview() {
           >
             Choose the plan that fits your business size. Start free and upgrade as you grow.
           </motion.p>
+          
+          {/* Billing Cycle Toggle */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex items-center justify-center mt-8 mb-8"
+          >
+            <div className="bg-[rgb(var(--muted))] p-1 rounded-lg">
+              <button
+                onClick={() => setBillingCycle('monthly')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                  billingCycle === 'monthly'
+                    ? 'bg-white dark:bg-gray-800 text-[rgb(var(--foreground))] shadow-sm'
+                    : 'text-[rgb(var(--foreground-muted))] hover:text-[rgb(var(--foreground))]'
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setBillingCycle('yearly')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                  billingCycle === 'yearly'
+                    ? 'bg-white dark:bg-gray-800 text-[rgb(var(--foreground))] shadow-sm'
+                    : 'text-[rgb(var(--foreground-muted))] hover:text-[rgb(var(--foreground))]'
+                }`}
+              >
+                Yearly
+                <span className="ml-1 text-xs text-green-600 dark:text-green-400">Save 20%</span>
+              </button>
+            </div>
+          </motion.div>
         </div>
 
         {loading ? (
@@ -154,11 +188,10 @@ export function PricingPreview() {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className={`relative bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border transition-all duration-300 hover:shadow-xl ${
-                      isPopular 
-                        ? 'border-primary-300 dark:border-primary-600 ring-2 ring-primary-500/20 scale-105' 
+                    className={`relative bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border transition-all duration-300 hover:shadow-xl ${isPopular
+                        ? 'border-primary-300 dark:border-primary-600 ring-2 ring-primary-500/20 scale-105'
                         : 'border-gray-200 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-700'
-                    }`}
+                      }`}
                   >
                     {isPopular && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -173,13 +206,20 @@ export function PricingPreview() {
                         <Icon className={`h-6 w-6 ${isPopular ? 'text-primary-600' : 'text-gray-600 dark:text-gray-400'}`} />
                         <h3 className="text-xl font-bold text-[rgb(var(--foreground))]">{plan.displayName}</h3>
                       </div>
-                      
+
                       <div className="mb-4">
                         <span className="text-4xl font-bold text-[rgb(var(--foreground))]">
-                          {formatPrice(plan.price.monthly)}
+                          {formatPrice(billingCycle === 'yearly' ? plan.price.yearly : plan.price.monthly)}
                         </span>
-                        {plan.price.monthly > 0 && (
-                          <span className="text-[rgb(var(--foreground-muted))] ml-1">/month</span>
+                        {(billingCycle === 'yearly' ? plan.price.yearly : plan.price.monthly) > 0 && (
+                          <span className="text-[rgb(var(--foreground-muted))] ml-1">
+                            /{billingCycle === 'yearly' ? 'year' : 'month'}
+                          </span>
+                        )}
+                        {billingCycle === 'yearly' && plan.price.yearly > 0 && plan.price.monthly > 0 && (
+                          <div className="text-sm text-green-600 dark:text-green-400 mt-1">
+                            Save ₹{((plan.price.monthly * 12) - plan.price.yearly).toLocaleString()} per year
+                          </div>
                         )}
                       </div>
 
@@ -197,20 +237,20 @@ export function PricingPreview() {
                       ))}
                     </div>
 
-                    <Link href={`/contact?plan=${plan.name}`}>
-                      <Button 
-                        className={`w-full ${isPopular ? 'bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700' : ''}`}
-                        variant={isPopular ? 'primary' : 'outline'}
-                      >
-                        {plan.price.monthly === 0 ? '🚀 Start Free' : '💼 Get Started'}
-                      </Button>
-                    </Link>
+                    <DirectCheckout
+                      planName={plan.name}
+                      planDisplayName={plan.displayName}
+                      billingCycle={billingCycle}
+                      price={billingCycle === 'yearly' ? plan.price.yearly : plan.price.monthly}
+                      isPopular={isPopular}
+                      className="w-full"
+                    />
                   </motion.div>
                 )
               })}
             </div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}

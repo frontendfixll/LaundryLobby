@@ -37,6 +37,7 @@ const contactInfo = [
 export default function ContactPage() {
   const searchParams = useSearchParams()
   const preselectedPlan = searchParams.get('plan') || undefined
+  const isBuyNow = searchParams.get('buyNow') === 'true'
   const source = preselectedPlan ? 'pricing_page' : 'website'
 
   return (
@@ -60,7 +61,7 @@ export default function ContactPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              Ready to transform your laundry business? Fill out the form below 
+              Ready to transform your laundry business? Fill out the form below
               and our team will get in touch to schedule a personalized demo.
             </motion.p>
           </div>
@@ -82,7 +83,7 @@ export default function ContactPage() {
                 Get in Touch
               </h2>
               <p className="mt-3 text-[rgb(var(--foreground-secondary))]">
-                Have questions? We&apos;re here to help. Reach out through any of 
+                Have questions? We&apos;re here to help. Reach out through any of
                 these channels or fill out the form.
               </p>
 
@@ -112,14 +113,14 @@ export default function ContactPage() {
               <Card className="p-8">
                 <CardContent className="p-0">
                   <h3 className="text-xl font-semibold text-[rgb(var(--foreground))] mb-6">
-                    Request a Demo
+                    {isBuyNow ? 'Confirm Your Plan' : 'Request a Demo'}
                     {preselectedPlan && (
                       <span className="ml-2 text-sm font-normal text-primary-600 dark:text-primary-400">
                         ({preselectedPlan.charAt(0).toUpperCase() + preselectedPlan.slice(1)} Plan)
                       </span>
                     )}
                   </h3>
-                  <LeadForm preselectedPlan={preselectedPlan} source={source as any} />
+                  <LeadForm preselectedPlan={preselectedPlan} source={source as any} isBuyNow={isBuyNow} />
                 </CardContent>
               </Card>
             </motion.div>

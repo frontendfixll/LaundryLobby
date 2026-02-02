@@ -37,8 +37,8 @@ export interface ApiResponse<T = unknown> {
   errors?: Array<{ field: string; message: string }>
 }
 
-export async function submitLead(data: LeadFormData): Promise<ApiResponse<{ leadId: string }>> {
-  const response = await api.post<ApiResponse<{ leadId: string }>>('/public/leads', data)
+export async function submitLead(data: LeadFormData): Promise<ApiResponse<{ leadId: string; checkoutUrl?: string }>> {
+  const response = await api.post<ApiResponse<{ leadId: string; checkoutUrl?: string }>>('/public/leads', data)
   return response.data
 }
 

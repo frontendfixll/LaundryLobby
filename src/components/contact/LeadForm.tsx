@@ -37,11 +37,13 @@ interface LeadFormProps {
   onError?: (error: Error) => void
   preselectedPlan?: string
   source?: 'website' | 'pricing_page' | 'referral' | 'other'
+  isBuyNow?: boolean
 }
 
-export function LeadForm({ onSuccess, onError, preselectedPlan, source = 'website' }: LeadFormProps) {
+export function LeadForm({ onSuccess, onError, preselectedPlan, source = 'website', isBuyNow }: LeadFormProps) {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState<string>('')
+  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null)
   const [showAddress, setShowAddress] = useState(false)
 
   const {
@@ -66,12 +68,16 @@ export function LeadForm({ onSuccess, onError, preselectedPlan, source = 'websit
   const onSubmit = async (data: LeadFormValues) => {
     setSubmitStatus('loading')
     setErrorMessage('')
+    setCheckoutUrl(null)
 
     try {
       const response = await submitLead(data)
-      
+
       if (response.success) {
         setSubmitStatus('success')
+        if (response.data && 'checkoutUrl' in response.data && response.data.checkoutUrl) {
+          setCheckoutUrl(response.data.checkoutUrl)
+        }
         reset()
         onSuccess?.()
       } else {
@@ -100,15 +106,33 @@ export function LeadForm({ onSuccess, onError, preselectedPlan, source = 'websit
           Thank You!
         </h3>
         <p className="mt-2 text-[rgb(var(--foreground-secondary))]">
-          We&apos;ve received your request. Our team will contact you within 24 hours.
+          {checkoutUrl
+            ? "Your lead has been submitted. You can now proceed to secure your plan."
+            : "We've received your request. Our team will contact you within 24 hours."}
         </p>
-        <Button
-          variant="outline"
-          className="mt-6"
-          onClick={() => setSubmitStatus('idle')}
-        >
-          Submit Another Request
-        </Button>
+
+        <div className="mt-8 flex flex-col gap-3">
+          {checkoutUrl && (
+            <Button
+              size="lg"
+              className="w-full bg-primary-600 hover:bg-primary-700 text-white"
+              onClick={() => window.location.href = checkoutUrl}
+            >
+              Proceed to Payment
+            </Button>
+          )}
+
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => {
+              setSubmitStatus('idle')
+              setCheckoutUrl(null)
+            }}
+          >
+            {checkoutUrl ? 'Back to Website' : 'Submit Another Request'}
+          </Button>
+        </div>
       </motion.div>
     )
   }
@@ -210,7 +234,7 @@ export function LeadForm({ onSuccess, onError, preselectedPlan, source = 'websit
           {showAddress ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           {showAddress ? 'Hide' : 'Add'} Business Address (Optional)
         </button>
-        
+
         {showAddress && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
