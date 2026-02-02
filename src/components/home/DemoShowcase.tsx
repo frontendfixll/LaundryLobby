@@ -20,7 +20,7 @@ const demoPortals = [
     name: 'Demo Tenant Portal',
     description: 'Example of a tenant-specific laundry portal',
     features: ['Branded experience', 'Custom domain', 'Tenant-specific features', 'Multi-tenancy'],
-    url: `https://demo-laundry.${process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'laundrypro.com'}`,
+    url: 'https://tenacy.laundrylobby.com/dgsfg',
     icon: Store,
     color: 'from-purple-500 to-purple-600',
     bgColor: 'bg-purple-50 dark:bg-purple-900/20',
