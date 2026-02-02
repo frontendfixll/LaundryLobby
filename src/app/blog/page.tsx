@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { blogApi, BlogPost, BlogCategory } from '@/services/blogApi'
-import { 
-  Search, 
-  Calendar, 
-  Clock, 
-  Eye, 
+import {
+  Search,
+  Calendar,
+  Clock,
+  Eye,
   Tag,
   ArrowRight,
   Loader2,
@@ -22,7 +22,7 @@ export default function BlogPage() {
   const [featuredPosts, setFeaturedPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  
+
   // Search and filters
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
@@ -36,11 +36,11 @@ export default function BlogPage() {
       const params = {
         page: currentPage,
         limit: 12,
-        audience: 'both', // Show content for both admin and customer audiences
+        audience: 'both' as 'both' | 'admin' | 'customer', // Show content for both admin and customer audiences
         ...(searchTerm && { search: searchTerm }),
         ...(selectedCategory && { category: selectedCategory })
       }
-      
+
       const response = await blogApi.getPosts(params)
       setPosts(response.data || [])
       setTotalPages(response.pagination?.pages || 1)
@@ -107,7 +107,7 @@ export default function BlogPage() {
             <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
               Insights, tips, and guides to help you grow your laundry business
             </p>
-            
+
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto">
               <div className="relative">
@@ -147,11 +147,10 @@ export default function BlogPage() {
                 <div className="space-y-2">
                   <button
                     onClick={() => setSelectedCategory('')}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      !selectedCategory 
-                        ? 'bg-blue-100 text-blue-800' 
+                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${!selectedCategory
+                        ? 'bg-blue-100 text-blue-800'
                         : 'text-gray-600 hover:bg-gray-100'
-                    }`}
+                      }`}
                   >
                     All Categories ({totalPosts})
                   </button>
@@ -159,11 +158,10 @@ export default function BlogPage() {
                     <button
                       key={category._id}
                       onClick={() => setSelectedCategory(category._id)}
-                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between ${
-                        selectedCategory === category._id
+                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between ${selectedCategory === category._id
                           ? 'text-white'
                           : 'text-gray-600 hover:bg-gray-100'
-                      }`}
+                        }`}
                       style={{
                         backgroundColor: selectedCategory === category._id ? category.color : undefined
                       }}
@@ -266,7 +264,7 @@ export default function BlogPage() {
                   {hasActiveFilters ? 'No articles found' : 'No articles available'}
                 </h3>
                 <p className="text-gray-500 mb-4">
-                  {hasActiveFilters 
+                  {hasActiveFilters
                     ? 'Try adjusting your search or filters to find what you\'re looking for.'
                     : 'Check back soon for helpful articles and insights.'
                   }
@@ -297,14 +295,14 @@ export default function BlogPage() {
                           />
                         </div>
                       )}
-                      
+
                       <div className="p-6">
                         <div className="flex items-center space-x-2 mb-3">
-                          <span 
+                          <span
                             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                            style={{ 
+                            style={{
                               backgroundColor: `${post.category.color}20`,
-                              color: post.category.color 
+                              color: post.category.color
                             }}
                           >
                             {post.category.name}
@@ -315,7 +313,7 @@ export default function BlogPage() {
                         </div>
 
                         <h2 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                          <Link 
+                          <Link
                             href={`/blog/${post.slug}`}
                             className="hover:text-blue-600 transition-colors"
                           >
@@ -380,7 +378,7 @@ export default function BlogPage() {
                     >
                       Previous
                     </button>
-                    
+
                     <div className="flex items-center space-x-1">
                       {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                         const page = i + 1
@@ -388,11 +386,10 @@ export default function BlogPage() {
                           <button
                             key={page}
                             onClick={() => setCurrentPage(page)}
-                            className={`px-3 py-2 text-sm rounded-lg ${
-                              currentPage === page
+                            className={`px-3 py-2 text-sm rounded-lg ${currentPage === page
                                 ? 'bg-blue-600 text-white'
                                 : 'text-gray-600 hover:bg-gray-100'
-                            }`}
+                              }`}
                           >
                             {page}
                           </button>
@@ -403,11 +400,10 @@ export default function BlogPage() {
                           <span className="px-2 text-gray-500">...</span>
                           <button
                             onClick={() => setCurrentPage(totalPages)}
-                            className={`px-3 py-2 text-sm rounded-lg ${
-                              currentPage === totalPages
+                            className={`px-3 py-2 text-sm rounded-lg ${currentPage === totalPages
                                 ? 'bg-blue-600 text-white'
                                 : 'text-gray-600 hover:bg-gray-100'
-                            }`}
+                              }`}
                           >
                             {totalPages}
                           </button>
@@ -432,4 +428,3 @@ export default function BlogPage() {
     </div>
   )
 }
-  

@@ -17,11 +17,11 @@ interface DirectCheckoutProps {
   className?: string
 }
 
-export function DirectCheckout({ 
-  planName, 
-  planDisplayName, 
-  billingCycle, 
-  price, 
+export function DirectCheckout({
+  planName,
+  planDisplayName,
+  billingCycle,
+  price,
   isPopular = false,
   className = ""
 }: DirectCheckoutProps) {
@@ -73,10 +73,10 @@ export function DirectCheckout({
         // Fallback to Stripe.js redirect
         const stripe = await stripePromise
         if (stripe && data.data.sessionId) {
-          const result = await stripe.redirectToCheckout({
+          const result = await (stripe as any).redirectToCheckout({
             sessionId: data.data.sessionId
           })
-          
+
           if (result.error) {
             setError(result.error.message || 'Failed to redirect to checkout')
             setLoading(false)
@@ -117,13 +117,13 @@ export function DirectCheckout({
           </>
         )}
       </Button>
-      
+
       {error && (
         <p className="text-sm text-red-600 dark:text-red-400 text-center">
           {error}
         </p>
       )}
-      
+
       {price > 0 && (
         <p className="text-xs text-center text-[rgb(var(--foreground-muted))]">
           Secure payment via Stripe • Cancel anytime

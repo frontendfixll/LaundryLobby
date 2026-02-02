@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { tenantBlogApi, BlogPost, BlogCategory } from '@/services/tenantBlogApi'
-import { 
-  Search, 
-  HelpCircle, 
-  FileText, 
-  Clock, 
+import {
+  Search,
+  HelpCircle,
+  FileText,
+  Clock,
   Eye,
   Filter,
   X,
@@ -23,13 +23,13 @@ const TENANT_NAME = process.env.NEXT_PUBLIC_TENANT_NAME || 'Help Center'
 export default function HelpCenterPage() {
   const searchParams = useSearchParams()
   const categoryParam = searchParams.get('category')
-  
+
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [categories, setCategories] = useState<BlogCategory[]>([])
   const [featuredPosts, setFeaturedPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  
+
   // Search and filters
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState(categoryParam || '')
@@ -43,11 +43,11 @@ export default function HelpCenterPage() {
       const params = {
         page: currentPage,
         limit: 12,
-        audience: 'customer',
+        audience: 'customer' as 'both' | 'admin' | 'customer',
         ...(searchTerm && { search: searchTerm }),
         ...(selectedCategory && { category: selectedCategory })
       }
-      
+
       const response = await tenantBlogApi.getTenantPosts(TENANT_ID, params)
       setPosts(response.data || [])
       setTotalPages(response.pagination?.pages || 1)
@@ -125,7 +125,7 @@ export default function HelpCenterPage() {
             <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
               Find answers to your questions and get the help you need
             </p>
-            
+
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto">
               <div className="relative">
@@ -165,11 +165,10 @@ export default function HelpCenterPage() {
                 <div className="space-y-2">
                   <button
                     onClick={() => setSelectedCategory('')}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      !selectedCategory 
-                        ? 'bg-blue-100 text-blue-800' 
+                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${!selectedCategory
+                        ? 'bg-blue-100 text-blue-800'
                         : 'text-gray-600 hover:bg-gray-100'
-                    }`}
+                      }`}
                   >
                     All Articles ({totalPosts})
                   </button>
@@ -177,11 +176,10 @@ export default function HelpCenterPage() {
                     <button
                       key={category._id}
                       onClick={() => setSelectedCategory(category._id)}
-                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between ${
-                        selectedCategory === category._id
+                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between ${selectedCategory === category._id
                           ? 'text-white'
                           : 'text-gray-600 hover:bg-gray-100'
-                      }`}
+                        }`}
                       style={{
                         backgroundColor: selectedCategory === category._id ? category.color : undefined
                       }}
@@ -284,7 +282,7 @@ export default function HelpCenterPage() {
                   {hasActiveFilters ? 'No articles found' : 'No help articles available'}
                 </h3>
                 <p className="text-gray-500 mb-4">
-                  {hasActiveFilters 
+                  {hasActiveFilters
                     ? 'Try adjusting your search or filters to find what you\'re looking for.'
                     : 'Check back soon for helpful articles and guides.'
                   }
@@ -315,14 +313,14 @@ export default function HelpCenterPage() {
                           />
                         </div>
                       )}
-                      
+
                       <div className="p-6">
                         <div className="flex items-center space-x-2 mb-3">
-                          <span 
+                          <span
                             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                            style={{ 
+                            style={{
                               backgroundColor: `${post.category.color}20`,
-                              color: post.category.color 
+                              color: post.category.color
                             }}
                           >
                             {post.category.name}
@@ -333,7 +331,7 @@ export default function HelpCenterPage() {
                         </div>
 
                         <h2 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                          <Link 
+                          <Link
                             href={`/help/${post.slug}`}
                             className="hover:text-blue-600 transition-colors"
                           >
@@ -380,7 +378,7 @@ export default function HelpCenterPage() {
                     >
                       Previous
                     </button>
-                    
+
                     <div className="flex items-center space-x-1">
                       {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                         const page = i + 1
@@ -388,11 +386,10 @@ export default function HelpCenterPage() {
                           <button
                             key={page}
                             onClick={() => setCurrentPage(page)}
-                            className={`px-3 py-2 text-sm rounded-lg ${
-                              currentPage === page
+                            className={`px-3 py-2 text-sm rounded-lg ${currentPage === page
                                 ? 'bg-blue-600 text-white'
                                 : 'text-gray-600 hover:bg-gray-100'
-                            }`}
+                              }`}
                           >
                             {page}
                           </button>
@@ -403,11 +400,10 @@ export default function HelpCenterPage() {
                           <span className="px-2 text-gray-500">...</span>
                           <button
                             onClick={() => setCurrentPage(totalPages)}
-                            className={`px-3 py-2 text-sm rounded-lg ${
-                              currentPage === totalPages
+                            className={`px-3 py-2 text-sm rounded-lg ${currentPage === totalPages
                                 ? 'bg-blue-600 text-white'
                                 : 'text-gray-600 hover:bg-gray-100'
-                            }`}
+                              }`}
                           >
                             {totalPages}
                           </button>

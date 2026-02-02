@@ -94,10 +94,10 @@ export function QuickCheckoutModal({
       } else {
         const stripe = await stripePromise
         if (stripe && result.data.sessionId) {
-          const stripeResult = await stripe.redirectToCheckout({
+          const stripeResult = await (stripe as any).redirectToCheckout({
             sessionId: result.data.sessionId
           })
-          
+
           if (stripeResult.error) {
             setError(stripeResult.error.message || 'Failed to redirect to checkout')
             setLoading(false)
@@ -144,7 +144,7 @@ export function QuickCheckoutModal({
               ₹{price.toLocaleString()}/{billingCycle === 'yearly' ? 'year' : 'month'}
             </span>
           </div>
-          
+
           {features && (
             <div className="text-sm text-[rgb(var(--foreground-muted))] space-y-1">
               <p>• {formatLimit(features.max_orders)} orders/month</p>
