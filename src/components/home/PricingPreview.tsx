@@ -94,12 +94,19 @@ export function PricingPreview() {
   const getKeyFeatures = (plan: BillingPlan) => {
     const features = []
 
-    if (plan.features?.max_orders) {
+    // Usage limits
+    if (plan.features?.max_orders !== undefined) {
       features.push(`${formatLimit(plan.features.max_orders)} orders/month`)
     }
-    if (plan.features?.max_staff) {
+    if (plan.features?.max_staff !== undefined) {
       features.push(`${formatLimit(plan.features.max_staff)} staff members`)
     }
+
+    // Core features (always included if not explicitly disabled)
+    features.push('Order Management')
+    features.push('Customer Database')
+
+    // Advanced features
     if (plan.features?.custom_branding) {
       features.push('Custom branding')
     }
@@ -108,6 +115,14 @@ export function PricingPreview() {
     }
     if (plan.features?.priority_support) {
       features.push('Priority support')
+    }
+    if (plan.features?.custom_domain) {
+      features.push('Custom domain')
+    }
+
+    // fallback for empty slots to ensure 4 items if possible, though above should suffice
+    if (features.length < 4) {
+      features.push('Mobile App Access')
     }
 
     return features.slice(0, 4) // Show max 4 features
@@ -136,7 +151,7 @@ export function PricingPreview() {
           >
             Choose the plan that fits your business size. Start free and upgrade as you grow.
           </motion.p>
-          
+
           {/* Billing Cycle Toggle */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -147,21 +162,19 @@ export function PricingPreview() {
             <div className="bg-[rgb(var(--muted))] p-1 rounded-lg">
               <button
                 onClick={() => setBillingCycle('monthly')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                  billingCycle === 'monthly'
-                    ? 'bg-white dark:bg-gray-800 text-[rgb(var(--foreground))] shadow-sm'
-                    : 'text-[rgb(var(--foreground-muted))] hover:text-[rgb(var(--foreground))]'
-                }`}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${billingCycle === 'monthly'
+                  ? 'bg-white dark:bg-gray-800 text-[rgb(var(--foreground))] shadow-sm'
+                  : 'text-[rgb(var(--foreground-muted))] hover:text-[rgb(var(--foreground))]'
+                  }`}
               >
                 Monthly
               </button>
               <button
                 onClick={() => setBillingCycle('yearly')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                  billingCycle === 'yearly'
-                    ? 'bg-white dark:bg-gray-800 text-[rgb(var(--foreground))] shadow-sm'
-                    : 'text-[rgb(var(--foreground-muted))] hover:text-[rgb(var(--foreground))]'
-                }`}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${billingCycle === 'yearly'
+                  ? 'bg-white dark:bg-gray-800 text-[rgb(var(--foreground))] shadow-sm'
+                  : 'text-[rgb(var(--foreground-muted))] hover:text-[rgb(var(--foreground))]'
+                  }`}
               >
                 Yearly
                 <span className="ml-1 text-xs text-green-600 dark:text-green-400">Save 20%</span>
@@ -188,9 +201,9 @@ export function PricingPreview() {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className={`relative bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border transition-all duration-300 hover:shadow-xl ${isPopular
-                        ? 'border-primary-300 dark:border-primary-600 ring-2 ring-primary-500/20 scale-105'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-700'
+                    className={`relative bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border transition-all duration-300 hover:shadow-xl h-full flex flex-col ${isPopular
+                      ? 'border-primary-300 dark:border-primary-600 ring-2 ring-primary-500/20 scale-105'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-700'
                       }`}
                   >
                     {isPopular && (
@@ -228,7 +241,7 @@ export function PricingPreview() {
                       )}
                     </div>
 
-                    <div className="space-y-3 mb-6">
+                    <div className="space-y-3 mb-6 flex-1">
                       {keyFeatures.map((feature, featureIndex) => (
                         <div key={featureIndex} className="flex items-center gap-2 text-sm">
                           <Check className="h-4 w-4 text-green-500 dark:text-green-400 flex-shrink-0" />
@@ -236,15 +249,6 @@ export function PricingPreview() {
                         </div>
                       ))}
                     </div>
-
-                    <DirectCheckout
-                      planName={plan.name}
-                      planDisplayName={plan.displayName}
-                      billingCycle={billingCycle}
-                      price={billingCycle === 'yearly' ? plan.price.yearly : plan.price.monthly}
-                      isPopular={isPopular}
-                      className="w-full"
-                    />
                   </motion.div>
                 )
               })}

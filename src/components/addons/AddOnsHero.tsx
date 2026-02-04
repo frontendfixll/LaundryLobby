@@ -35,7 +35,7 @@ const features = [
 const stats = [
   { label: 'Available Add-ons', value: '25+' },
   { label: 'Categories', value: '6' },
-  { label: 'Happy Customers', value: '1000+' }
+  { label: 'Features', value: 'Advanced' }
 ]
 
 export function AddOnsHero() {
@@ -129,7 +129,7 @@ export function AddOnsHero() {
                 name: 'Campaign Manager',
                 category: 'Marketing',
                 price: '₹799/month',
-                description: 'Create and manage promotional campaigns',
+                description: 'Create promotional campaigns',
                 popular: true,
                 features: ['Discount Coupons', 'Email Campaigns', 'Analytics']
               },
@@ -145,12 +145,12 @@ export function AddOnsHero() {
                 name: 'SMS Pack (1000)',
                 category: 'Communication',
                 price: '₹300/pack',
-                description: 'Send SMS notifications to customers',
+                description: 'Send SMS notifications',
                 popular: true,
                 features: ['Order Updates', 'Delivery Alerts', 'Promotional SMS']
               }
             ].map((addon, index) => (
-              <div key={index} className="relative p-6 border border-gray-200 rounded-xl hover:border-blue-300 transition-colors">
+              <div key={index} className="relative p-6 border border-gray-200 rounded-xl hover:border-blue-300 transition-colors flex flex-col h-full">
                 {addon.popular && (
                   <div className="absolute -top-3 left-6">
                     <Badge className="bg-orange-100 text-orange-800">
@@ -169,7 +169,7 @@ export function AddOnsHero() {
                   <div className="text-lg font-bold text-blue-600">{addon.price}</div>
                 </div>
 
-                <div className="space-y-2 mb-4">
+                <div className="space-y-2 mb-4 flex-grow">
                   {addon.features.map((feature, featureIndex) => (
                     <div key={featureIndex} className="flex items-center gap-2 text-sm text-gray-600">
                       <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
@@ -178,7 +178,7 @@ export function AddOnsHero() {
                   ))}
                 </div>
 
-                <Button variant="outline" size="sm" className="w-full">
+                <Button variant="outline" size="sm" className="w-full mt-auto">
                   Learn More
                 </Button>
               </div>

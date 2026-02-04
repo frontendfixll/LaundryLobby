@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { 
-  Users, 
-  Zap, 
-  TrendingUp, 
-  Globe, 
-  Package, 
+import {
+  Users,
+  Zap,
+  TrendingUp,
+  Globe,
+  Package,
   Shield,
   CheckCircle,
   Star,
@@ -37,7 +37,7 @@ const categoryColors = {
 // Helper function to format price
 const formatPrice = (pricing: any) => {
   if (!pricing) return 'Contact us'
-  
+
   if (pricing.monthly && pricing.monthly > 0) {
     return `₹${pricing.monthly}/month`
   }
@@ -86,13 +86,13 @@ export function AddOnsShowcase() {
       try {
         setLoading(true)
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/public/addons/marketplace`)
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch add-ons')
         }
-        
+
         const data = await response.json()
-        
+
         if (data.success) {
           setAddOns(data.data.addOns || [])
         } else {
@@ -120,7 +120,7 @@ export function AddOnsShowcase() {
     { id: 'support', label: 'Support', count: addOns.filter(a => a.category === 'support').length }
   ]
 
-  const filteredAddOns = addOns.filter(addon => 
+  const filteredAddOns = addOns.filter(addon =>
     selectedCategory === 'all' || addon.category === selectedCategory
   )
 
@@ -214,8 +214,8 @@ export function AddOnsShowcase() {
         {/* Show More Button */}
         {filteredAddOns.length > 6 && !showAll && (
           <div className="text-center">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="lg"
               onClick={() => setShowAll(true)}
               className="px-8"
@@ -231,17 +231,19 @@ export function AddOnsShowcase() {
           {Object.entries(categoryIcons).map(([category, IconComponent]) => {
             const categoryCount = addOns.filter(a => a.category === category).length;
             if (categoryCount === 0) return null; // Don't show empty categories
-            
+
             return (
               <Card key={category} className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-lg ${categoryColors[category as keyof typeof categoryColors].replace('text-', 'bg-').replace('800', '100')}`}>
-                      <IconComponent className="h-6 w-6" style={{ color: categoryColors[category as keyof typeof categoryColors].includes('blue') ? '#3B82F6' : 
-                        categoryColors[category as keyof typeof categoryColors].includes('purple') ? '#8B5CF6' :
-                        categoryColors[category as keyof typeof categoryColors].includes('orange') ? '#F59E0B' :
-                        categoryColors[category as keyof typeof categoryColors].includes('pink') ? '#EC4899' :
-                        categoryColors[category as keyof typeof categoryColors].includes('indigo') ? '#6366F1' : '#10B981' }} />
+                      <IconComponent className="h-6 w-6" style={{
+                        color: categoryColors[category as keyof typeof categoryColors].includes('blue') ? '#3B82F6' :
+                          categoryColors[category as keyof typeof categoryColors].includes('purple') ? '#8B5CF6' :
+                            categoryColors[category as keyof typeof categoryColors].includes('orange') ? '#F59E0B' :
+                              categoryColors[category as keyof typeof categoryColors].includes('pink') ? '#EC4899' :
+                                categoryColors[category as keyof typeof categoryColors].includes('indigo') ? '#6366F1' : '#10B981'
+                      }} />
                     </div>
                     <div>
                       <CardTitle className="capitalize">{category} Add-ons</CardTitle>
@@ -260,9 +262,9 @@ export function AddOnsShowcase() {
                     {category === 'integration' && 'Connect with third-party tools and services'}
                     {category === 'support' && 'Get enhanced support and assistance for your business'}
                   </p>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     className="w-full"
                     onClick={() => setSelectedCategory(category)}
                   >
@@ -284,9 +286,9 @@ interface AddOnCardProps {
 
 function AddOnCard({ addon }: AddOnCardProps) {
   const IconComponent = categoryIcons[addon.category as keyof typeof categoryIcons]
-  
+
   return (
-    <Card className="relative overflow-hidden hover:shadow-xl transition-all duration-300 group">
+    <Card className="relative overflow-hidden hover:shadow-xl transition-all duration-300 group h-full flex flex-col">
       {/* Popular Badge */}
       {addon.isPopular && (
         <div className="absolute top-4 right-4 z-10">
@@ -308,7 +310,7 @@ function AddOnCard({ addon }: AddOnCardProps) {
 
       <CardHeader className="pb-4">
         <div className="flex items-start gap-3">
-          <div 
+          <div
             className="p-3 rounded-xl group-hover:scale-110 transition-transform"
             style={{ backgroundColor: addon.color + '20' }}
           >
@@ -323,16 +325,18 @@ function AddOnCard({ addon }: AddOnCardProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 flex-1 flex flex-col">
         <p className="text-sm text-gray-600">{addon.description}</p>
 
         {/* Category Badge */}
-        <Badge 
-          variant="secondary" 
-          className={categoryColors[addon.category as keyof typeof categoryColors]}
-        >
-          {addon.category}
-        </Badge>
+        <div>
+          <Badge
+            variant="secondary"
+            className={categoryColors[addon.category as keyof typeof categoryColors]}
+          >
+            {addon.category}
+          </Badge>
+        </div>
 
         {/* Key Features */}
         {addon.features && addon.features.length > 0 && (
@@ -350,7 +354,7 @@ function AddOnCard({ addon }: AddOnCardProps) {
         )}
 
         {/* Pricing */}
-        <div className="pt-4 border-t">
+        <div className="pt-4 border-t mt-auto">
           <div className="flex items-center justify-between mb-4">
             <div>
               <div className="text-2xl font-bold text-gray-900">

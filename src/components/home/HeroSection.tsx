@@ -51,7 +51,7 @@ export function HeroSection({
             transition={{ duration: 0.5 }}
           >
             <span className="inline-flex items-center rounded-full bg-white/20 backdrop-blur-sm px-4 py-1.5 text-sm font-medium text-white">
-              🚀 Trusted by 500+ laundry businesses
+              🚀 New Platform Launch
             </span>
           </motion.div>
 

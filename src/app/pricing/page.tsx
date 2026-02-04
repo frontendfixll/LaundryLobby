@@ -192,7 +192,7 @@ export default function PricingPage() {
                   <FeatureCard
                     icon={<Lock className="h-6 w-6 text-amber-500" />}
                     title="Secure & Reliable"
-                    description="Bank-level security with 99.9% uptime"
+                    description="Bank-level security with robust infrastructure"
                     included="All Plans"
                   />
                 </div>
@@ -257,7 +257,7 @@ export default function PricingPage() {
                 Why Choose LaundryLobby?
               </h2>
               <p className="text-base text-[rgb(var(--foreground-muted))] max-w-2xl mx-auto">
-                Join thousands of laundry businesses that have transformed their operations
+                Experience the power of modern laundry management technology
               </p>
             </div>
 
@@ -265,26 +265,26 @@ export default function PricingPage() {
               <BenefitCard
                 icon={<TrendingUp className="h-6 w-6 text-green-500" />}
                 title="Increase Revenue"
-                description="Average 30% revenue increase in first 6 months"
-                stat="30% ↗"
+                description="Streamline operations to boost your business growth"
+                stat="Growth 📈"
               />
               <BenefitCard
                 icon={<Users className="h-6 w-6 text-blue-500" />}
-                title="Happy Customers"
-                description="Improve customer satisfaction with better service"
-                stat="95%"
+                title="Better Service"
+                description="Provide excellent service with automated workflows"
+                stat="Quality 🎯"
               />
               <BenefitCard
                 icon={<Sparkles className="h-6 w-6 text-purple-500" />}
                 title="Save Time"
                 description="Automate routine tasks and focus on growth"
-                stat="5hrs/day"
+                stat="Efficient ⏰"
               />
               <BenefitCard
                 icon={<Shield className="h-6 w-6 text-amber-500" />}
                 title="Reduce Errors"
                 description="Minimize mistakes with automated processes"
-                stat="90%"
+                stat="Reliable ✅"
               />
             </div>
           </div>

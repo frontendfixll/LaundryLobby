@@ -24,24 +24,24 @@ const benefits = [
 
 const testimonials = [
   {
-    name: 'Rajesh Kumar',
-    business: 'Clean & Fresh Laundry',
-    location: 'Mumbai',
-    quote: 'The Campaign Manager add-on increased our customer retention by 40%. Best investment we made!',
+    name: 'Sample Business',
+    business: 'Modern Laundry',
+    location: 'Demo',
+    quote: 'Campaign Manager add-on helps increase customer retention with targeted marketing campaigns.',
     addon: 'Campaign Manager'
   },
   {
-    name: 'Priya Sharma',
+    name: 'Demo Account',
     business: 'Express Wash',
-    location: 'Delhi',
-    quote: 'SMS notifications reduced our customer support calls by 60%. Customers love the updates!',
+    location: 'Demo',
+    quote: 'SMS notifications keep customers informed about their order status in real-time.',
     addon: 'SMS Pack'
   },
   {
-    name: 'Amit Patel',
+    name: 'Test User',
     business: 'Quick Clean Services',
-    location: 'Bangalore',
-    quote: 'Extra Branch add-on helped us expand to 3 locations seamlessly. Highly recommended!',
+    location: 'Demo',
+    quote: 'Extra Branch add-on enables seamless multi-location management from one dashboard.',
     addon: 'Extra Branch'
   }
 ]
@@ -76,9 +76,9 @@ export function AddOnsCTA() {
         <div className="mb-16">
           <div className="text-center mb-12">
             <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Trusted by 1000+ Laundry Businesses
+              Built for Growing Laundry Businesses
             </h3>
-            <p className="text-gray-600">See what our customers say about our add-ons</p>
+            <p className="text-gray-600">Discover how our add-ons can transform your operations</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -119,7 +119,7 @@ export function AddOnsCTA() {
             Ready to Supercharge Your Business?
           </h2>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Join thousands of successful laundry businesses using LaundryPro add-ons to grow faster and serve customers better.
+            Start your laundry business journey with our comprehensive platform designed to help you grow and succeed.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">

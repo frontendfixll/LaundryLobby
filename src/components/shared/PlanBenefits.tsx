@@ -62,26 +62,26 @@ const generalBenefits = [
   {
     icon: <TrendingUp className="h-8 w-8 text-green-500" />,
     title: 'Increase Revenue',
-    description: 'Average 30% revenue increase in first 6 months',
-    stat: '30% ↗️'
+    description: 'Streamline operations to boost your business growth',
+    stat: 'Growth 📈'
   },
   {
     icon: <Users className="h-8 w-8 text-blue-500" />,
-    title: 'Happy Customers',
-    description: 'Improve customer satisfaction with better service',
-    stat: '95% 😊'
+    title: 'Better Service',
+    description: 'Provide excellent service with automated workflows',
+    stat: 'Quality 🎯'
   },
   {
     icon: <Clock className="h-8 w-8 text-purple-500" />,
     title: 'Save Time',
     description: 'Automate routine tasks and focus on growth',
-    stat: '5hrs/day ⏰'
+    stat: 'Efficient ⏰'
   },
   {
     icon: <Shield className="h-8 w-8 text-amber-500" />,
     title: 'Reduce Errors',
     description: 'Minimize mistakes with automated processes',
-    stat: '90% ✅'
+    stat: 'Reliable ✅'
   }
 ]
 
@@ -138,7 +138,7 @@ export function PlanBenefits({ selectedPlan }: PlanBenefitsProps) {
               🚀 Why Choose LaundryLobby?
             </h2>
             <p className="text-lg text-[rgb(var(--foreground-muted))] max-w-2xl mx-auto">
-              Join thousands of laundry businesses that have transformed their operations
+              Experience the power of modern laundry management technology
             </p>
           </motion.div>
 
@@ -169,11 +169,11 @@ export function PlanBenefits({ selectedPlan }: PlanBenefitsProps) {
         >
           <div className="bg-gradient-to-r from-primary-600 to-secondary-600 rounded-2xl p-8 text-white">
             <h3 className="text-2xl font-bold mb-4">
-              ⭐ Trusted by 1000+ Laundry Businesses
+              ⭐ Built for Modern Laundry Businesses
             </h3>
             <p className="text-primary-100 mb-6 max-w-2xl mx-auto">
-              "LaundryLobby helped us increase our revenue by 40% and reduce operational costs by 25%. 
-              The customer support is exceptional!"
+              "Experience the future of laundry management with our comprehensive platform designed 
+              to streamline operations and enhance customer satisfaction."
             </p>
             <div className="flex items-center justify-center gap-4">
               <div className="flex -space-x-2">
@@ -182,8 +182,8 @@ export function PlanBenefits({ selectedPlan }: PlanBenefitsProps) {
                 ))}
               </div>
               <div className="text-left">
-                <div className="font-semibold">Rajesh Kumar</div>
-                <div className="text-sm text-primary-200">Owner, Clean & Fresh Laundry</div>
+                <div className="font-semibold">LaundryLobby Team</div>
+                <div className="text-sm text-primary-200">Platform Developers</div>
               </div>
             </div>
           </div>

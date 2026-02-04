@@ -238,7 +238,7 @@ function getMockAddOns(filters: AddOnFilters = {}): AddOn[] {
       name: 'sms-pack-1000',
       slug: 'sms-pack-1000',
       displayName: 'SMS Pack (1000)',
-      description: 'Send SMS notifications to customers for order updates, delivery alerts, and promotional messages.',
+      description: 'Send SMS notifications to customers.',
       shortDescription: '1000 SMS credits',
       category: 'usage',
       subcategory: 'communication',

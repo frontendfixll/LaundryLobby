@@ -1,6 +1,6 @@
 {
   "name": "laundry-marketing",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3007",
