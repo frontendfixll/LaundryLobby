@@ -123,7 +123,7 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
   const scrollToIndex = (index: number) => {
     setCurrentIndex(index)
     if (scrollRef.current) {
-      const cardWidth = 320 // Card width + gap
+      const cardWidth = 290 // Card width + gap (reduced from 320)
       scrollRef.current.scrollTo({
         left: index * cardWidth,
         behavior: 'smooth'
@@ -167,10 +167,10 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
       )}
 
       {/* Plans Display */}
-      <div className={`${showAsSlider ? 'lg:grid lg:grid-cols-4 lg:gap-6' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'}`}>
+      <div className={`${showAsSlider ? 'lg:grid lg:grid-cols-4 lg:gap-4' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'}`}>
         <div
           ref={scrollRef}
-          className={`${showAsSlider ? 'flex gap-6 overflow-x-auto scrollbar-hide pb-4 lg:contents' : 'contents'}`}
+          className={`${showAsSlider ? 'flex gap-4 overflow-x-auto scrollbar-hide pb-4 lg:contents' : 'contents'}`}
           style={showAsSlider ? { scrollbarWidth: 'none', msOverflowStyle: 'none' } : {}}
         >
           {sortedPlans.map((plan, index) => {
@@ -185,13 +185,13 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`relative rounded-2xl border-2 ${colors.border} ${colors.bg} p-6 flex flex-col transition-all duration-300 ${showAsSlider ? 'min-w-[300px] max-w-[300px] lg:min-w-0 lg:max-w-none' : ''} hover:shadow-xl hover:scale-105 ${isPopular ? 'ring-2 ring-primary-500 dark:ring-primary-400 transform scale-105' : ''
+                className={`relative rounded-xl border-2 ${colors.border} ${colors.bg} p-4 flex flex-col transition-all duration-300 ${showAsSlider ? 'min-w-[280px] max-w-[280px] lg:min-w-0 lg:max-w-none' : ''} hover:shadow-lg hover:scale-[1.02] ${isPopular ? 'ring-2 ring-primary-500 dark:ring-primary-400 transform scale-[1.02]' : ''
                   }`}
               >
                 {/* Popular Badge */}
                 {isPopular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <div className={`bg-gradient-to-r ${colors.gradient} text-white text-xs font-medium px-4 py-1 rounded-full flex items-center gap-1`}>
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2">
+                    <div className={`bg-gradient-to-r ${colors.gradient} text-white text-xs font-medium px-3 py-0.5 rounded-full flex items-center gap-1`}>
                       <Star className="h-3 w-3 fill-current" />
                       {plan.badge || 'Most Popular'}
                     </div>
@@ -199,37 +199,37 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
                 )}
 
                 {/* Plan Header */}
-                <div className="mb-6">
-                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colors.badge} mb-4`}>
-                    <Icon className="h-4 w-4" />
-                    <span className="text-sm font-medium">{plan.displayName}</span>
+                <div className="mb-4">
+                  <div className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full ${colors.badge} mb-3`}>
+                    <Icon className="h-3.5 w-3.5" />
+                    <span className="text-xs font-medium">{plan.displayName}</span>
                   </div>
 
                   {plan.description && (
-                    <p className="text-sm text-[rgb(var(--foreground-muted))] mb-4">{plan.description}</p>
+                    <p className="text-xs text-[rgb(var(--foreground-muted))] mb-3 leading-tight">{plan.description}</p>
                   )}
 
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold text-[rgb(var(--foreground))]">
+                  <div className="mt-3">
+                    <span className="text-3xl font-bold text-[rgb(var(--foreground))]">
                       {formatPrice(billingCycle === 'yearly' ? plan.price.yearly : plan.price.monthly)}
                     </span>
                     {plan.price.monthly > 0 && (
-                      <span className="text-[rgb(var(--foreground-muted))] ml-1">
+                      <span className="text-[rgb(var(--foreground-muted))] ml-1 text-sm">
                         /{billingCycle === 'yearly' ? 'year' : 'month'}
                       </span>
                     )}
                   </div>
 
                   {billingCycle === 'yearly' && savings > 0 && (
-                    <p className="text-sm text-green-600 dark:text-green-400 mt-1 font-medium">
+                    <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-medium">
                       💰 Save {savings}% with yearly billing
                     </p>
                   )}
                 </div>
 
                 {/* Limits Section */}
-                <div className="space-y-3 mb-6 pb-6 border-b border-[rgb(var(--border))]">
-                  <h4 className="font-semibold text-sm text-[rgb(var(--foreground))] mb-3">� Usage Limits</h4>
+                <div className="space-y-2 mb-4 pb-3 border-b border-[rgb(var(--border))]">
+                  <h4 className="font-semibold text-xs text-[rgb(var(--foreground))] mb-2">📊 Usage Limits</h4>
                   <LimitRow label="Orders/month" value={formatLimit(plan.features?.max_orders)} />
                   <LimitRow label="Staff members" value={formatLimit(plan.features?.max_staff)} />
                   <LimitRow label="Customers" value={formatLimit(plan.features?.max_customers)} />
@@ -237,8 +237,8 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
                 </div>
 
                 {/* Core Features */}
-                <div className="space-y-3 mb-6 pb-6 border-b border-[rgb(var(--border))]">
-                  <h4 className="font-semibold text-sm text-[rgb(var(--foreground))] mb-3">🚀 Core Features</h4>
+                <div className="space-y-2 mb-4 pb-3 border-b border-[rgb(var(--border))]">
+                  <h4 className="font-semibold text-xs text-[rgb(var(--foreground))] mb-2">🚀 Core Features</h4>
                   <FeatureRow label="Order Management" enabled={true} />
                   <FeatureRow label="Customer Database" enabled={true} />
                   <FeatureRow label="Basic Reports" enabled={true} />
@@ -246,8 +246,8 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
                 </div>
 
                 {/* Advanced Features */}
-                <div className="space-y-3 mb-6 pb-6 border-b border-[rgb(var(--border))]">
-                  <h4 className="font-semibold text-sm text-[rgb(var(--foreground))] mb-3">⭐ Advanced Features</h4>
+                <div className="space-y-2 mb-4 pb-3 border-b border-[rgb(var(--border))]">
+                  <h4 className="font-semibold text-xs text-[rgb(var(--foreground))] mb-2">⭐ Advanced Features</h4>
                   <FeatureRow label="Custom Branding" enabled={plan.features?.custom_branding ?? false} />
                   <FeatureRow label="Custom Domain" enabled={plan.features?.custom_domain ?? false} />
                   <FeatureRow label="Advanced Analytics" enabled={plan.features?.advanced_analytics ?? false} />
@@ -256,8 +256,8 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
                 </div>
 
                 {/* Marketing Features */}
-                <div className="space-y-3 mb-6 pb-6 border-b border-[rgb(var(--border))]">
-                  <h4 className="font-semibold text-sm text-[rgb(var(--foreground))] mb-3">� Marketing & Growth</h4>
+                <div className="space-y-2 mb-4 pb-3 border-b border-[rgb(var(--border))]">
+                  <h4 className="font-semibold text-xs text-[rgb(var(--foreground))] mb-2">📈 Marketing & Growth</h4>
                   <FeatureRow label="Campaigns" enabled={plan.features?.campaigns ?? false} />
                   <FeatureRow label="Loyalty Program" enabled={plan.features?.loyalty_points ?? false} />
                   <FeatureRow label="SMS Notifications" enabled={plan.features?.sms_notifications ?? false} />
@@ -265,8 +265,8 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
                 </div>
 
                 {/* Support & Integration */}
-                <div className="space-y-3 flex-1 mb-6">
-                  <h4 className="font-semibold text-sm text-[rgb(var(--foreground))] mb-3">🛠️ Support & Integration</h4>
+                <div className="space-y-2 flex-1 mb-4">
+                  <h4 className="font-semibold text-xs text-[rgb(var(--foreground))] mb-2">🛠️ Support & Integration</h4>
                   <FeatureRow label="Priority Support" enabled={plan.features?.priority_support ?? false} />
                   <FeatureRow label="POS Integration" enabled={plan.features?.pos_integration ?? false} />
                   <FeatureRow label="Accounting Integration" enabled={plan.features?.accounting_integration ?? false} />
@@ -274,7 +274,7 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
                 </div>
 
                 {/* CTA Buttons */}
-                <div className="space-y-3 mt-auto">
+                <div className="space-y-2 mt-auto">
                   {/* Direct Checkout Button */}
                   <DirectCheckout
                     planName={plan.name}
@@ -290,7 +290,7 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full text-xs"
+                        className="w-full text-xs py-1"
                       >
                         Or contact sales
                       </Button>
@@ -337,7 +337,7 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
 
 function LimitRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between text-sm">
+    <div className="flex justify-between text-xs">
       <span className="text-[rgb(var(--foreground-muted))]">{label}</span>
       <span className="font-medium text-[rgb(var(--foreground))]">{value}</span>
     </div>
@@ -346,11 +346,11 @@ function LimitRow({ label, value }: { label: string; value: string }) {
 
 function FeatureRow({ label, enabled }: { label: string; enabled: boolean }) {
   return (
-    <div className="flex items-center gap-2 text-sm">
+    <div className="flex items-center gap-2 text-xs">
       {enabled ? (
-        <Check className="h-4 w-4 text-green-500 dark:text-green-400 flex-shrink-0" />
+        <Check className="h-3 w-3 text-green-500 dark:text-green-400 flex-shrink-0" />
       ) : (
-        <X className="h-4 w-4 text-gray-300 dark:text-gray-600 flex-shrink-0" />
+        <X className="h-3 w-3 text-gray-300 dark:text-gray-600 flex-shrink-0" />
       )}
       <span className={enabled ? 'text-[rgb(var(--foreground))]' : 'text-[rgb(var(--foreground-muted))] line-through'}>
         {label}

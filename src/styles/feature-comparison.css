@@ -1,0 +1,72 @@
+/* Feature Comparison Sticky Header Styles */
+.feature-comparison-sticky-header {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: rgba(249, 250, 251, 0.98);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dark .feature-comparison-sticky-header {
+  background: rgba(17, 24, 39, 0.98);
+  border-bottom-color: rgba(75, 85, 99, 0.8);
+}
+
+/* Smooth scroll behavior for better UX */
+.feature-comparison-container {
+  scroll-behavior: smooth;
+}
+
+/* Remove transitions for seamless experience */
+.feature-comparison-content {
+  /* No transitions needed */
+}
+
+.feature-comparison-content.with-sticky-header {
+  /* No extra padding needed */
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .feature-comparison-sticky-header {
+    position: fixed;
+    top: 60px !important; /* Smaller header on mobile */
+    z-index: 40;
+  }
+}
+
+/* Improve scrollbar styling for horizontal scroll */
+.feature-comparison-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.feature-comparison-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.feature-comparison-scroll::-webkit-scrollbar-thumb {
+  background: rgba(203, 213, 225, 0.8);
+  border-radius: 2px;
+}
+
+.feature-comparison-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.9);
+}
+
+.dark .feature-comparison-scroll::-webkit-scrollbar-thumb {
+  background: rgba(107, 114, 128, 0.8);
+}
+
+.dark .feature-comparison-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.9);
+}
+
+/* Ensure sticky header positioning */
+@media (min-width: 769px) {
+  .feature-comparison-sticky-header {
+    /* Will be set via inline style for precise positioning */
+  }
+}

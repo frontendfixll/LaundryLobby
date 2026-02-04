@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Feature Comparison Styles */
+@import '../styles/feature-comparison.css';
+
 @layer base {
   :root {
     /* Light Theme - Clean & Professional */
@@ -91,6 +94,10 @@
     @apply bg-[rgb(var(--background))] text-[rgb(var(--foreground))] antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
     transition: background-color 0.3s ease, color 0.3s ease;
+    
+    /* Mac-only font smoothing improvements */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -156,6 +163,52 @@
     text-wrap: balance;
   }
 }
+
+/* Mac-Only Font Readability Improvements - Minimal Impact */
+
+/* Only target Mac Safari/Chrome - very subtle improvements */
+@supports (-webkit-appearance: none) {
+  /* Slightly better letter spacing for Mac font rendering */
+  body {
+    letter-spacing: 0.005em;
+  }
+  
+  /* Improve font weight only for headings on Mac */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600 !important;
+  }
+  
+  /* Minimal button text improvement */
+  button, .btn, [type="button"], [type="submit"] {
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  
+  /* Slightly larger text for marketing content on Mac */
+  .hero-title {
+    font-size: 105% !important;
+  }
+  
+  .section-title {
+    font-size: 105% !important;
+  }
+}
+
+/* Only for high-DPI Mac displays - very conservative */
+@media (-webkit-min-device-pixel-ratio: 2) and (max-width: 2560px) {
+  @supports (-webkit-appearance: none) {
+    /* Better font smoothing for Retina */
+    body {
+      -webkit-font-smoothing: subpixel-antialiased;
+    }
+    
+    /* Slightly larger marketing text on Retina Mac */
+    .hero-title {
+      font-size: 110% !important;
+    }
+  }
+}
+
 /* Notification animations */
 @keyframes slide-in-right {
   from {
