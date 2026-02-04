@@ -300,12 +300,12 @@ export default function PricingPage() {
               </p>
               <div className="flex flex-wrap justify-center gap-3">
                 <Link href="/contact?plan=enterprise">
-                  <Button size="default" className="bg-gradient-to-r from-primary-600 to-secondary-600">
+                  <Button size="md" className="bg-gradient-to-r from-primary-600 to-secondary-600">
                     Contact Sales
                   </Button>
                 </Link>
                 <Link href="/features">
-                  <Button size="default" variant="outline">
+                  <Button size="md" variant="outline">
                     View All Features
                   </Button>
                 </Link>
@@ -327,13 +327,13 @@ export default function PricingPage() {
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Link href="/contact">
-                <Button size="default" className="group">
+                <Button size="md" className="group">
                   Request a Demo
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
               <Link href="/contact?plan=free">
-                <Button size="default" variant="outline">
+                <Button size="md" variant="outline">
                   Start Free Trial
                 </Button>
               </Link>

@@ -254,7 +254,7 @@ export function FeatureComparison({ plans, billingCycle }: FeatureComparisonProp
           </div>
 
           {/* Feature Categories */}
-          <div className="divide-y divide-gray-200 dark:divide-gray-700">>
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {featureCategories.map((category, categoryIndex) => {
               const isExpanded = expandedCategories.includes(category.name)
               
