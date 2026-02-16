@@ -23,6 +23,7 @@ interface BillingPlan {
     api_access: boolean
     white_label: boolean
     priority_support: boolean
+    dedicated_manager: boolean
     custom_branding: boolean
     campaigns: boolean
     loyalty_points: boolean
@@ -108,6 +109,7 @@ const featureCategories: FeatureCategory[] = [
       { key: 'pos_integration', name: 'POS Integration', description: 'Connect with point-of-sale systems', type: 'boolean' },
       { key: 'accounting_integration', name: 'Accounting Integration', description: 'Sync with QuickBooks, Tally, etc.', type: 'boolean' },
       { key: 'priority_support', name: 'Priority Support', description: '24/7 priority customer support', type: 'boolean' },
+      { key: 'dedicated_manager', name: 'Dedicated Account Manager', description: 'Personal account manager for your business', type: 'boolean' },
     ]
   }
 ]

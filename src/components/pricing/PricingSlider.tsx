@@ -27,6 +27,7 @@ interface BillingPlan {
     api_access: boolean
     white_label: boolean
     priority_support: boolean
+    dedicated_manager: boolean
     custom_branding: boolean
     campaigns: boolean
     loyalty_points: boolean
@@ -268,6 +269,7 @@ export function PricingSlider({ plans, billingCycle }: PricingSliderProps) {
                 <div className="space-y-2 flex-1 mb-4">
                   <h4 className="font-semibold text-xs text-[rgb(var(--foreground))] mb-2">🛠️ Support & Integration</h4>
                   <FeatureRow label="Priority Support" enabled={plan.features?.priority_support ?? false} />
+                  <FeatureRow label="Dedicated Account Manager" enabled={plan.features?.dedicated_manager ?? false} />
                   <FeatureRow label="POS Integration" enabled={plan.features?.pos_integration ?? false} />
                   <FeatureRow label="Accounting Integration" enabled={plan.features?.accounting_integration ?? false} />
                   <FeatureRow label="Multi-location" enabled={plan.features?.multi_location ?? false} />

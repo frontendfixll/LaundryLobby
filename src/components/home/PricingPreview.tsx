@@ -27,6 +27,7 @@ interface BillingPlan {
     api_access: boolean
     white_label: boolean
     priority_support: boolean
+    dedicated_manager: boolean
     custom_branding: boolean
   }
 }
@@ -115,6 +116,9 @@ export function PricingPreview() {
     }
     if (plan.features?.priority_support) {
       features.push('Priority support')
+    }
+    if (plan.features?.dedicated_manager) {
+      features.push('Dedicated account manager')
     }
     if (plan.features?.custom_domain) {
       features.push('Custom domain')

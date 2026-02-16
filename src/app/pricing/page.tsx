@@ -28,6 +28,7 @@ interface BillingPlan {
     api_access: boolean
     white_label: boolean
     priority_support: boolean
+    dedicated_manager: boolean
     custom_branding: boolean
     campaigns: boolean
     loyalty_points: boolean
