@@ -8,7 +8,7 @@ import { CheckCircle, Loader2, ArrowRight, Mail, AlertCircle } from 'lucide-reac
 import { Button } from '@/components/ui'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
-const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3005'
+const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://tenacy.laundrylobby.com'
 
 interface SignupStatus {
   status: 'pending' | 'payment_processing' | 'completed' | 'failed' | 'expired'
