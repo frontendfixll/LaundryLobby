@@ -28,6 +28,7 @@ export default function SignupPage() {
   const searchParams = useSearchParams()
   const planId = params.planId as string
   const cancelled = searchParams.get('cancelled')
+  const addon = searchParams.get('addon')
 
   const [plan, setPlan] = useState<BillingPlan | null>(null)
   const [loading, setLoading] = useState(true)
@@ -59,7 +60,9 @@ export default function SignupPage() {
       const response = await fetch(`${API_URL}/public/billing/plans`)
       const data = await response.json()
       if (data.success) {
-        const foundPlan = data.data.plans.find((p: BillingPlan) => p._id === planId)
+        const foundPlan = data.data.plans.find((p: BillingPlan) =>
+          p._id === planId || p.name.toLowerCase() === planId.toLowerCase()
+        )
         if (foundPlan) {
           setPlan(foundPlan)
         } else {
@@ -122,7 +125,7 @@ export default function SignupPage() {
           phone: formData.phone,
           password: formData.password,
           address: formData.address,
-          planId: planId,
+          planId: plan?._id || planId,
           billingCycle
         })
       })
@@ -132,7 +135,8 @@ export default function SignupPage() {
       if (data.success) {
         // For free plans, redirect to success page directly
         if (data.data.loginUrl) {
-          router.push(`/signup/success?free=true&email=${encodeURIComponent(formData.email)}`)
+          const tenantSlug = data.data.tenancy?.slug || ''
+          router.push(`/signup/success?free=true&email=${encodeURIComponent(formData.email)}&tenant=${tenantSlug}${addon ? `&addon=${addon}` : ''}`)
         } else {
           // Redirect to Stripe checkout
           window.location.href = data.data.checkoutUrl

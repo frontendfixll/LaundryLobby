@@ -37,8 +37,9 @@ const contactInfo = [
 export default function ContactPage() {
   const searchParams = useSearchParams()
   const preselectedPlan = searchParams.get('plan') || undefined
+  const preselectedAddOn = searchParams.get('addon') || undefined
   const isBuyNow = searchParams.get('buyNow') === 'true'
-  const source = preselectedPlan ? 'pricing_page' : 'website'
+  const source = preselectedAddOn ? 'pricing_page' : preselectedPlan ? 'pricing_page' : 'website'
 
   return (
     <>
@@ -113,14 +114,14 @@ export default function ContactPage() {
               <Card className="p-8">
                 <CardContent className="p-0">
                   <h3 className="text-xl font-semibold text-[rgb(var(--foreground))] mb-6">
-                    {isBuyNow ? 'Confirm Your Plan' : 'Request a Demo'}
-                    {preselectedPlan && (
+                    {preselectedAddOn ? 'Get Started with Add-on' : isBuyNow ? 'Confirm Your Plan' : 'Request a Demo'}
+                    {preselectedPlan && !preselectedAddOn && (
                       <span className="ml-2 text-sm font-normal text-primary-600 dark:text-primary-400">
                         ({preselectedPlan.charAt(0).toUpperCase() + preselectedPlan.slice(1)} Plan)
                       </span>
                     )}
                   </h3>
-                  <LeadForm preselectedPlan={preselectedPlan} source={source as any} isBuyNow={isBuyNow} />
+                  <LeadForm preselectedPlan={preselectedPlan} preselectedAddOn={preselectedAddOn} source={source as any} isBuyNow={isBuyNow} />
                 </CardContent>
               </Card>
             </motion.div>
