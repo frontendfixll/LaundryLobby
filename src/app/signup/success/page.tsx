@@ -8,7 +8,7 @@ import { CheckCircle, Loader2, ArrowRight, Mail, AlertCircle } from 'lucide-reac
 import { Button } from '@/components/ui'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
-const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3000'
+const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3005'
 
 interface SignupStatus {
   status: 'pending' | 'payment_processing' | 'completed' | 'failed' | 'expired'
@@ -24,6 +24,8 @@ export default function SignupSuccessPage() {
   const sessionId = searchParams.get('session_id')
   const isFree = searchParams.get('free') === 'true'
   const email = searchParams.get('email')
+  const tenantSlug = searchParams.get('tenant')
+  const addon = searchParams.get('addon')
 
   const [status, setStatus] = useState<SignupStatus | null>(null)
   const [loading, setLoading] = useState(true)
@@ -180,7 +182,7 @@ export default function SignupSuccessPage() {
           )}
 
           <div className="space-y-3">
-            <a href={`${FRONTEND_URL}/auth/login`}>
+            <a href={tenantSlug ? `${FRONTEND_URL}/${tenantSlug}/auth/login` : `${FRONTEND_URL}/auth/login`}>
               <Button className="w-full group">
                 Go to Dashboard
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -188,6 +190,7 @@ export default function SignupSuccessPage() {
             </a>
             <p className="text-sm text-[rgb(var(--foreground-muted))]">
               Use your email and password to login
+              {tenantSlug && <span className="block mt-1 text-primary-600">Your tenant: <strong>{tenantSlug}</strong></span>}
             </p>
           </div>
 

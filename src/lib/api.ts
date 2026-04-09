@@ -27,6 +27,7 @@ export interface LeadFormData {
     country?: string
   }
   message?: string
+  interestedAddOn?: string
   source?: 'website' | 'pricing_page' | 'referral' | 'other'
 }
 

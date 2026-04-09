@@ -41,6 +41,9 @@ export const leadFormSchema = z.object({
   expectedMonthlyOrders: z.enum(['0-100', '100-500', '500-1000', '1000-5000', '5000+']).optional(),
   currentBranches: z.number().min(1).optional(),
   
+  // Interested Add-on (from marketplace)
+  interestedAddOn: z.string().optional(),
+
   // Additional
   message: z
     .string()

@@ -36,11 +36,12 @@ interface LeadFormProps {
   onSuccess?: () => void
   onError?: (error: Error) => void
   preselectedPlan?: string
+  preselectedAddOn?: string
   source?: 'website' | 'pricing_page' | 'referral' | 'other'
   isBuyNow?: boolean
 }
 
-export function LeadForm({ onSuccess, onError, preselectedPlan, source = 'website', isBuyNow }: LeadFormProps) {
+export function LeadForm({ onSuccess, onError, preselectedPlan, preselectedAddOn, source = 'website', isBuyNow }: LeadFormProps) {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null)
@@ -56,6 +57,7 @@ export function LeadForm({ onSuccess, onError, preselectedPlan, source = 'websit
     defaultValues: {
       businessType: undefined,
       interestedPlan: preselectedPlan as any || 'undecided',
+      interestedAddOn: preselectedAddOn || undefined,
       expectedMonthlyOrders: '0-100',
       currentBranches: 1,
       source,
@@ -92,6 +94,10 @@ export function LeadForm({ onSuccess, onError, preselectedPlan, source = 'websit
   }
 
   if (submitStatus === 'success') {
+    const signupUrl = preselectedAddOn
+      ? `/signup/free?addon=${preselectedAddOn}`
+      : '/signup/free'
+
     return (
       <motion.div
         className="rounded-2xl bg-secondary-50 dark:bg-secondary-900/30 p-8 text-center"
@@ -105,34 +111,79 @@ export function LeadForm({ onSuccess, onError, preselectedPlan, source = 'websit
         <h3 className="mt-4 text-xl font-semibold text-[rgb(var(--foreground))]">
           Thank You!
         </h3>
-        <p className="mt-2 text-[rgb(var(--foreground-secondary))]">
-          {checkoutUrl
-            ? "Your lead has been submitted. You can now proceed to secure your plan."
-            : "We've received your request. Our team will contact you within 24 hours."}
-        </p>
 
-        <div className="mt-8 flex flex-col gap-3">
-          {checkoutUrl && (
-            <Button
-              size="lg"
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white"
-              onClick={() => window.location.href = checkoutUrl}
-            >
-              Proceed to Payment
-            </Button>
-          )}
+        {/* Add-on flow: self-service signup + sales backup */}
+        {preselectedAddOn ? (
+          <>
+            <p className="mt-2 text-[rgb(var(--foreground-secondary))]">
+              Your request for <span className="font-semibold capitalize">{preselectedAddOn.replace(/-/g, ' ')}</span> has been received.
+              Create your free account now and start using it right away!
+            </p>
 
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => {
-              setSubmitStatus('idle')
-              setCheckoutUrl(null)
-            }}
-          >
-            {checkoutUrl ? 'Back to Website' : 'Submit Another Request'}
-          </Button>
-        </div>
+            <div className="mt-8 flex flex-col gap-3">
+              <Button
+                size="lg"
+                className="w-full bg-primary-600 hover:bg-primary-700 text-white"
+                onClick={() => window.location.href = signupUrl}
+              >
+                Create Your Free Account
+              </Button>
+
+              <div className="relative my-2">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200 dark:border-gray-700" />
+                </div>
+                <div className="relative flex justify-center text-xs">
+                  <span className="bg-secondary-50 dark:bg-secondary-900/30 px-3 text-[rgb(var(--foreground-muted))]">or</span>
+                </div>
+              </div>
+
+              <p className="text-sm text-[rgb(var(--foreground-muted))]">
+                Our team will also contact you within 24 hours to help you get set up.
+              </p>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Default flow: checkout or wait for sales */}
+            <p className="mt-2 text-[rgb(var(--foreground-secondary))]">
+              {checkoutUrl
+                ? "Your request has been submitted. You can now proceed to secure your plan."
+                : "We've received your request. Our team will contact you within 24 hours."}
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3">
+              {checkoutUrl ? (
+                <Button
+                  size="lg"
+                  className="w-full bg-primary-600 hover:bg-primary-700 text-white"
+                  onClick={() => window.location.href = checkoutUrl}
+                >
+                  Proceed to Payment
+                </Button>
+              ) : (
+                <Button
+                  size="lg"
+                  className="w-full bg-primary-600 hover:bg-primary-700 text-white"
+                  onClick={() => window.location.href = signupUrl}
+                >
+                  Create Your Free Account
+                </Button>
+              )}
+            </div>
+          </>
+        )}
+
+        <Button
+          variant="outline"
+          className="w-full mt-3"
+          onClick={() => {
+            setSubmitStatus('idle')
+            setCheckoutUrl(null)
+          }}
+        >
+          Submit Another Request
+        </Button>
       </motion.div>
     )
   }
@@ -151,6 +202,25 @@ export function LeadForm({ onSuccess, onError, preselectedPlan, source = 'websit
             <p className="text-sm text-red-700 dark:text-red-400 mt-1">{errorMessage}</p>
           </div>
         </motion.div>
+      )}
+
+      {/* Add-on Interest Banner */}
+      {preselectedAddOn && (
+        <div className="rounded-lg bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/50">
+              <CheckCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-blue-900 dark:text-blue-200">
+                Interested in: <span className="font-bold capitalize">{preselectedAddOn.replace(/-/g, ' ')}</span>
+              </p>
+              <p className="text-xs text-blue-700 dark:text-blue-400">
+                Fill out the form below and our team will help you get set up with this add-on.
+              </p>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Contact Info */}
@@ -290,6 +360,7 @@ export function LeadForm({ onSuccess, onError, preselectedPlan, source = 'websit
       />
 
       <input type="hidden" {...register('source')} />
+      {preselectedAddOn && <input type="hidden" {...register('interestedAddOn')} />}
 
       <Button
         type="submit"
@@ -298,7 +369,7 @@ export function LeadForm({ onSuccess, onError, preselectedPlan, source = 'websit
         isLoading={submitStatus === 'loading'}
         disabled={submitStatus === 'loading'}
       >
-        {submitStatus === 'loading' ? 'Submitting...' : 'Request a Demo'}
+        {submitStatus === 'loading' ? 'Submitting...' : preselectedAddOn ? 'Get Started' : 'Request a Demo'}
       </Button>
 
       <p className="text-center text-sm text-[rgb(var(--foreground-muted))]">
