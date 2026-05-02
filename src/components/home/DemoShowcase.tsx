@@ -9,7 +9,7 @@ const demoPortals = [
     name: 'Customer Portal',
     description: 'Experience the customer journey from booking to pickup',
     features: ['Online booking', 'Order tracking', 'Loyalty rewards', 'Payment integration'],
-    url: process.env.NEXT_PUBLIC_CUSTOMER_URL || 'http://localhost:3002',
+    url: process.env.NEXT_PUBLIC_CUSTOMER_URL || 'https://tenacy.laundrylobby.com/dgsfg',
     icon: Users,
     color: 'from-blue-500 to-blue-600',
     bgColor: 'bg-blue-50 dark:bg-blue-900/20',
