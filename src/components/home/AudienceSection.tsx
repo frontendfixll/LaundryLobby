@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Store, Building2, Sparkles, CheckCircle } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui'
@@ -85,39 +86,62 @@ export function AudienceSection() {
           </motion.p>
         </div>
 
-        <motion.div
-          className="mt-12 grid gap-8 lg:grid-cols-3"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {audiences.map((audience) => (
-            <motion.div key={audience.title} variants={itemVariants}>
-              <Card className="h-full border-2 border-transparent hover:border-primary-200 dark:hover:border-primary-700 transition-colors">
-                <CardContent className="p-8">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 dark:from-primary-400 dark:to-primary-500">
-                    <audience.icon className="h-7 w-7 text-white" />
-                  </div>
-                  <h3 className="mt-6 text-xl font-semibold text-[rgb(var(--foreground))]">
-                    {audience.title}
-                  </h3>
-                  <p className="mt-2 text-[rgb(var(--foreground-secondary))]">
-                    {audience.description}
-                  </p>
-                  <ul className="mt-6 space-y-3">
-                    {audience.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-3">
-                        <CheckCircle className="h-5 w-5 text-secondary-500 dark:text-secondary-400 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm text-[rgb(var(--foreground-secondary))]">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </motion.div>
+        <div className="mt-12 grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
+          {/* LEFT — 3 stacked cards */}
+          <motion.div
+            className="flex flex-col gap-6 order-2 lg:order-1"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {audiences.map((audience) => (
+              <motion.div key={audience.title} variants={itemVariants}>
+                <Card className="h-full border-2 border-transparent hover:border-primary-200 dark:hover:border-primary-700 transition-colors">
+                  <CardContent className="p-6 sm:p-8">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 dark:from-primary-400 dark:to-primary-500">
+                      <audience.icon className="h-7 w-7 text-white" />
+                    </div>
+                    <h3 className="mt-6 text-xl font-semibold text-[rgb(var(--foreground))]">
+                      {audience.title}
+                    </h3>
+                    <p className="mt-2 text-[rgb(var(--foreground-secondary))]">
+                      {audience.description}
+                    </p>
+                    <ul className="mt-6 space-y-3">
+                      {audience.features.map((feature) => (
+                        <li key={feature} className="flex items-start gap-3">
+                          <CheckCircle className="h-5 w-5 text-secondary-500 dark:text-secondary-400 flex-shrink-0 mt-0.5" />
+                          <span className="text-sm text-[rgb(var(--foreground-secondary))]">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* RIGHT — hero image (sticky on desktop) */}
+          <motion.div
+            className="order-1 lg:order-2 lg:sticky lg:top-24"
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="relative overflow-hidden rounded-2xl">
+              <Image
+                src="/images/hero.png"
+                alt="LaundryLobby business management dashboard"
+                width={1200}
+                height={800}
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="h-auto w-full object-contain"
+              />
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   )
