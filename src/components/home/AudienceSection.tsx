@@ -1,7 +1,7 @@
 'use client'
 
-import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Store, Building2, Sparkles, CheckCircle } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui'
 
@@ -16,6 +16,7 @@ const audiences = [
       'Simple order management',
       'Customer loyalty program',
     ],
+    videoSrc: '/videos/small-laundries.mp4',
   },
   {
     icon: Building2,
@@ -27,6 +28,7 @@ const audiences = [
       'Staff management',
       'Inventory tracking',
     ],
+    videoSrc: '/videos/laundry-chains.mp4',
   },
   {
     icon: Sparkles,
@@ -38,6 +40,7 @@ const audiences = [
       'VIP customer tiers',
       'Detailed item tracking',
     ],
+    videoSrc: '/videos/dry-cleaners.mp4',
   },
 ]
 
@@ -61,6 +64,9 @@ const itemVariants = {
 }
 
 export function AudienceSection() {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const activeVideo = audiences[activeIndex].videoSrc
+
   return (
     <section className="section-padding bg-[rgb(var(--background-secondary))] transition-colors duration-300">
       <div className="container-marketing">
@@ -95,34 +101,45 @@ export function AudienceSection() {
             whileInView="visible"
             viewport={{ once: true }}
           >
-            {audiences.map((audience) => (
-              <motion.div key={audience.title} variants={itemVariants}>
-                <Card className="h-full border-2 border-transparent hover:border-primary-200 dark:hover:border-primary-700 transition-colors">
-                  <CardContent className="p-6 sm:p-8">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 dark:from-primary-400 dark:to-primary-500">
-                      <audience.icon className="h-7 w-7 text-white" />
-                    </div>
-                    <h3 className="mt-6 text-xl font-semibold text-[rgb(var(--foreground))]">
-                      {audience.title}
-                    </h3>
-                    <p className="mt-2 text-[rgb(var(--foreground-secondary))]">
-                      {audience.description}
-                    </p>
-                    <ul className="mt-6 space-y-3">
-                      {audience.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-3">
-                          <CheckCircle className="h-5 w-5 text-secondary-500 dark:text-secondary-400 flex-shrink-0 mt-0.5" />
-                          <span className="text-sm text-[rgb(var(--foreground-secondary))]">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            {audiences.map((audience, index) => {
+              const isActive = activeIndex === index
+              return (
+                <motion.div key={audience.title} variants={itemVariants}>
+                  <Card
+                    onMouseEnter={() => setActiveIndex(index)}
+                    onClick={() => setActiveIndex(index)}
+                    className={`h-full cursor-pointer border-2 transition-colors ${
+                      isActive
+                        ? 'border-primary-500 dark:border-primary-400 shadow-lg'
+                        : 'border-transparent hover:border-primary-200 dark:hover:border-primary-700'
+                    }`}
+                  >
+                    <CardContent className="p-6 sm:p-8">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 dark:from-primary-400 dark:to-primary-500">
+                        <audience.icon className="h-7 w-7 text-white" />
+                      </div>
+                      <h3 className="mt-6 text-xl font-semibold text-[rgb(var(--foreground))]">
+                        {audience.title}
+                      </h3>
+                      <p className="mt-2 text-[rgb(var(--foreground-secondary))]">
+                        {audience.description}
+                      </p>
+                      <ul className="mt-6 space-y-3">
+                        {audience.features.map((feature) => (
+                          <li key={feature} className="flex items-start gap-3">
+                            <CheckCircle className="h-5 w-5 text-secondary-500 dark:text-secondary-400 flex-shrink-0 mt-0.5" />
+                            <span className="text-sm text-[rgb(var(--foreground-secondary))]">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )
+            })}
           </motion.div>
 
-          {/* RIGHT — hero image (sticky on desktop) */}
+          {/* RIGHT — video that swaps with the active card */}
           <motion.div
             className="order-1 lg:order-2 lg:sticky lg:top-24"
             initial={{ opacity: 0, scale: 0.96 }}
@@ -130,15 +147,22 @@ export function AudienceSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="relative overflow-hidden rounded-2xl">
-              <Image
-                src="/images/hero.png"
-                alt="LaundryLobby business management dashboard"
-                width={1200}
-                height={800}
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="h-auto w-full object-contain"
-              />
+            <div className="relative aspect-video overflow-hidden rounded-2xl bg-black">
+              <AnimatePresence mode="wait">
+                <motion.video
+                  key={activeVideo}
+                  src={activeVideo}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              </AnimatePresence>
             </div>
           </motion.div>
         </div>

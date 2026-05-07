@@ -16,7 +16,7 @@ export function HeroSection({
   videoPoster,
 }: HeroSectionProps) {
   return (
-    <section className="relative flex min-h-[80vh] items-center overflow-hidden">
+    <section className="relative flex items-center overflow-hidden">
       {/* Background Video */}
       <div className="absolute inset-0 -z-20">
         <video
@@ -34,7 +34,7 @@ export function HeroSection({
       {/* Dark Overlay */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
 
-      <div className="container-marketing relative z-10 py-20 sm:py-24 lg:py-28">
+      <div className="container-marketing relative z-10 py-6 sm:py-8 lg:py-10">
         <div className="mx-auto max-w-3xl text-center">
           <motion.h1
             className="text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl"
