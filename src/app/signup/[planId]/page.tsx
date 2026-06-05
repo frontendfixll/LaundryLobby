@@ -36,6 +36,15 @@ export default function SignupPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
   const [error, setError] = useState('')
 
+  // Promo code
+  const [promoCode, setPromoCode] = useState('')
+  const [promoStatus, setPromoStatus] = useState<{
+    state: 'idle' | 'validating' | 'valid' | 'invalid'
+    message?: string
+    planName?: string
+    trialDays?: number
+  }>({ state: 'idle' })
+
   const [formData, setFormData] = useState({
     businessName: '',
     ownerName: '',
@@ -102,6 +111,30 @@ export default function SignupPage() {
     return null
   }
 
+  const validatePromo = async () => {
+    if (!promoCode.trim()) return
+    setPromoStatus({ state: 'validating' })
+    try {
+      const res = await fetch(`${API_URL}/public/signup/validate-promo`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: promoCode.trim() }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setPromoStatus({
+          state: 'valid',
+          planName: data.data?.plan?.displayName || data.data?.plan?.name,
+          trialDays: data.data?.trialDays,
+        })
+      } else {
+        setPromoStatus({ state: 'invalid', message: data.message || 'Invalid code' })
+      }
+    } catch {
+      setPromoStatus({ state: 'invalid', message: 'Could not validate. Try again.' })
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -126,7 +159,8 @@ export default function SignupPage() {
           password: formData.password,
           address: formData.address,
           planId: plan?._id || planId,
-          billingCycle
+          billingCycle,
+          ...(promoStatus.state === 'valid' && promoCode ? { promoCode } : {}),
         })
       })
 
@@ -158,6 +192,8 @@ export default function SignupPage() {
 
   const calculateTotal = () => {
     if (!plan) return { subtotal: 0, tax: 0, total: 0 }
+    // Promo grants a free trial — no upfront charge.
+    if (promoStatus.state === 'valid') return { subtotal: 0, tax: 0, total: 0 }
     const price = billingCycle === 'yearly' ? plan.price.yearly : plan.price.monthly
     const tax = Math.round(price * 0.18)
     return { subtotal: price, tax, total: price + tax }
@@ -381,6 +417,54 @@ export default function SignupPage() {
                   </div>
                 </div>
 
+                {/* Promo Code */}
+                <div className="pt-2 border-t border-[rgb(var(--border))]">
+                  <label className="block text-sm font-medium text-[rgb(var(--foreground))] mb-2">
+                    Have a promo code? <span className="text-[rgb(var(--foreground-muted))] font-normal">(optional)</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => {
+                        setPromoCode(e.target.value.toUpperCase())
+                        setPromoStatus({ state: 'idle' })
+                      }}
+                      placeholder="e.g. PRO90"
+                      disabled={promoStatus.state === 'valid'}
+                      className="flex-1 px-4 py-3 border border-[rgb(var(--border))] rounded-lg bg-[rgb(var(--background))] text-[rgb(var(--foreground))] font-mono uppercase focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-60"
+                    />
+                    {promoStatus.state === 'valid' ? (
+                      <button
+                        type="button"
+                        onClick={() => { setPromoCode(''); setPromoStatus({ state: 'idle' }) }}
+                        className="px-4 py-3 border border-[rgb(var(--border))] rounded-lg text-sm font-medium hover:bg-[rgb(var(--muted))]"
+                      >
+                        Remove
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={validatePromo}
+                        disabled={!promoCode.trim() || promoStatus.state === 'validating'}
+                        className="px-4 py-3 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700 disabled:opacity-50"
+                      >
+                        {promoStatus.state === 'validating' ? 'Checking…' : 'Apply'}
+                      </button>
+                    )}
+                  </div>
+                  {promoStatus.state === 'valid' && (
+                    <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800">
+                      ✓ <strong>{promoCode}</strong> applied — {promoStatus.planName} plan free for {promoStatus.trialDays} days
+                    </div>
+                  )}
+                  {promoStatus.state === 'invalid' && (
+                    <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                      {promoStatus.message}
+                    </div>
+                  )}
+                </div>
+
                 {/* Submit */}
                 <Button
                   type="submit"
@@ -470,10 +554,12 @@ export default function SignupPage() {
 
               {/* Price Breakdown */}
               <div className="space-y-2 py-4 border-t border-[rgb(var(--border))]">
-                <div className="flex justify-between text-sm">
-                  <span className="text-[rgb(var(--foreground-muted))]">Subtotal</span>
-                  <span className="text-[rgb(var(--foreground))]">{formatPrice(pricing.subtotal)}</span>
-                </div>
+                {pricing.subtotal > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-[rgb(var(--foreground-muted))]">Subtotal</span>
+                    <span className="text-[rgb(var(--foreground))]">{formatPrice(pricing.subtotal)}</span>
+                  </div>
+                )}
                 {pricing.tax > 0 && (
                   <div className="flex justify-between text-sm">
                     <span className="text-[rgb(var(--foreground-muted))]">GST (18%)</span>
@@ -481,7 +567,9 @@ export default function SignupPage() {
                   </div>
                 )}
                 <div className="flex justify-between font-semibold pt-2 border-t border-[rgb(var(--border))]">
-                  <span className="text-[rgb(var(--foreground))]">Total</span>
+                  <span className="text-[rgb(var(--foreground))]">
+                    {pricing.total === 0 ? 'Due Today' : 'Total'}
+                  </span>
                   <span className="text-[rgb(var(--foreground))]">
                     {formatPrice(pricing.total)}
                     {pricing.total > 0 && (
@@ -493,15 +581,24 @@ export default function SignupPage() {
                 </div>
               </div>
 
-              {/* Trial Info */}
-              {plan.trialDays && plan.trialDays > 0 && (
+              {/* Trial Info — promo wins, otherwise show plan default */}
+              {promoStatus.state === 'valid' && promoStatus.trialDays ? (
+                <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center gap-2 text-green-700">
+                    <Check className="h-4 w-4" />
+                    <span className="text-sm font-medium">
+                      Promo {promoCode} — {promoStatus.trialDays}-day free trial on {promoStatus.planName} plan
+                    </span>
+                  </div>
+                </div>
+              ) : plan.trialDays && plan.trialDays > 0 ? (
                 <div className="mt-4 p-3 bg-green-50 rounded-lg">
                   <div className="flex items-center gap-2 text-green-700">
                     <Check className="h-4 w-4" />
                     <span className="text-sm font-medium">{plan.trialDays}-day free trial included</span>
                   </div>
                 </div>
-              )}
+              ) : null}
 
               {/* Features Preview */}
               <div className="mt-4 pt-4 border-t border-[rgb(var(--border))]">
