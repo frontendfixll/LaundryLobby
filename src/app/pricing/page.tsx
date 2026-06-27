@@ -1,12 +1,8 @@
-'use client'
-
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { ArrowRight, Sparkles, Users, TrendingUp, Shield, Package, Database, Smartphone, Lock, Target, Building, Megaphone, MessageSquare } from 'lucide-react'
+import { ArrowRight, Sparkles, Users, TrendingUp, Shield, Package, Database, Smartphone, Lock, Building, Megaphone, MessageSquare } from 'lucide-react'
 import { Button } from '@/components/ui'
 import { VideoHero } from '@/components/shared'
-import { PricingSlider, FeatureComparison } from '@/components/pricing'
+import { PricingInteractive } from '@/components/pricing/PricingInteractive'
 import { mockBillingPlans } from '@/lib/mockData'
 
 interface BillingPlan {
@@ -14,92 +10,39 @@ interface BillingPlan {
   name: string
   displayName: string
   description?: string
-  price: {
-    monthly: number
-    yearly: number
-  }
-  features: {
-    max_orders: number
-    max_staff: number
-    max_customers: number
-    max_branches: number
-    custom_domain: boolean
-    advanced_analytics: boolean
-    api_access: boolean
-    white_label: boolean
-    priority_support: boolean
-    dedicated_manager: boolean
-    custom_branding: boolean
-    campaigns: boolean
-    loyalty_points: boolean
-    inventory_management: boolean
-    multi_location: boolean
-    custom_reports: boolean
-    mobile_app: boolean
-    sms_notifications: boolean
-    email_marketing: boolean
-    pos_integration: boolean
-    accounting_integration: boolean
-  }
+  price: { monthly: number; yearly: number }
+  features: Record<string, boolean | number>
   isPopular?: boolean
   badge?: string
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
+const PLAN_ORDER: Record<string, number> = { free: 0, basic: 1, pro: 2, enterprise: 3 }
 
-export default function PricingPage() {
-  const [plans, setPlans] = useState<BillingPlan[]>([])
-  const [loading, setLoading] = useState(true)
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
-
-  useEffect(() => {
-    fetchPlans()
-  }, [])
-
-  const fetchPlans = async () => {
-    try {
-      console.log('🔍 Fetching plans from:', `${API_URL}/public/billing/plans`);
-      const response = await fetch(`${API_URL}/public/billing/plans`)
-      console.log('📡 Response status:', response.status);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      
-      const data = await response.json()
-      console.log('✅ API Response received:', data);
-      
-      if (data.success && data.data?.plans) {
-        // Sort plans in correct order and mark popular
-        const sortedPlans = data.data.plans
-          .map((plan: BillingPlan) => ({
-            ...plan,
-            isPopular: plan.name === 'pro',
-            badge: plan.name === 'pro' ? 'Most Popular' : plan.name === 'enterprise' ? 'Best Value' : undefined
-          }))
-          .sort((a: BillingPlan, b: BillingPlan) => {
-            const order = { free: 0, basic: 1, pro: 2, enterprise: 3 }
-            return (order[a.name as keyof typeof order] || 999) - (order[b.name as keyof typeof order] || 999)
-          })
-        
-        setPlans(sortedPlans)
-        console.log('📊 Plans loaded and sorted:', sortedPlans.length);
-      } else {
-        throw new Error('Invalid API response format');
-      }
-    } catch (error) {
-      console.error('❌ Failed to fetch plans:', error)
-      console.log('🔄 Using fallback mock data...');
-      // Sort mock data as well
-      const sortedMockPlans = [...mockBillingPlans].sort((a, b) => {
-        const order = { free: 0, basic: 1, pro: 2, enterprise: 3 }
-        return (order[a.name as keyof typeof order] || 999) - (order[b.name as keyof typeof order] || 999)
-      })
-      setPlans(sortedMockPlans)
-    } finally {
-      setLoading(false)
-    }
+async function fetchPlans(): Promise<BillingPlan[]> {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
+  try {
+    const res = await fetch(`${apiUrl}/public/billing/plans`, { cache: 'no-store' })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const data = await res.json()
+    if (!data.success || !data.data?.plans) throw new Error('Invalid response')
+    return data.data.plans
+      .map((plan: BillingPlan) => ({
+        ...plan,
+        isPopular: plan.name === 'pro',
+        badge: plan.name === 'pro' ? 'Most Popular' : plan.name === 'enterprise' ? 'Best Value' : undefined,
+      }))
+      .sort((a: BillingPlan, b: BillingPlan) =>
+        (PLAN_ORDER[a.name] ?? 999) - (PLAN_ORDER[b.name] ?? 999)
+      )
+  } catch {
+    return [...mockBillingPlans].sort(
+      (a, b) => (PLAN_ORDER[a.name] ?? 999) - (PLAN_ORDER[b.name] ?? 999)
+    )
   }
+}
+
+export default async function PricingPage() {
+  const plans = await fetchPlans()
 
   return (
     <>
@@ -118,138 +61,91 @@ export default function PricingPage() {
         subtitle="Choose the plan that fits your business. No hidden fees, cancel anytime."
       />
 
-      {/* Billing Cycle Toggle */}
       <section className="section-padding bg-[rgb(var(--background))] transition-colors duration-300">
         <div className="container-marketing">
-          <div className="flex justify-center mb-8">
-            <div className="inline-flex items-center rounded-full bg-[rgb(var(--muted))] p-1">
-              <button
-                onClick={() => setBillingCycle('monthly')}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                  billingCycle === 'monthly'
-                    ? 'bg-[rgb(var(--background))] text-[rgb(var(--foreground))] shadow-sm'
-                    : 'text-[rgb(var(--foreground-muted))] hover:text-[rgb(var(--foreground))]'
-                }`}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setBillingCycle('yearly')}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
-                  billingCycle === 'yearly'
-                    ? 'bg-[rgb(var(--background))] text-[rgb(var(--foreground))] shadow-sm'
-                    : 'text-[rgb(var(--foreground-muted))] hover:text-[rgb(var(--foreground))]'
-                }`}
-              >
-                Yearly
-                <span className="text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 px-2 py-0.5 rounded-full">
-                  Save up to 20%
-                </span>
-              </button>
+          {/* Interactive: billing toggle + plan cards + feature comparison */}
+          <PricingInteractive plans={plans} />
+
+          {/* What's Included */}
+          <div className="mb-12">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-[rgb(var(--foreground))] mb-3">
+                What&apos;s Included in Every Plan
+              </h2>
+              <p className="text-base text-[rgb(var(--foreground-muted))] max-w-2xl mx-auto">
+                All plans include our core laundry management features. Higher plans unlock advanced capabilities.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <FeatureCard
+                icon={<Package className="h-6 w-6 text-blue-500" />}
+                title="Order Management"
+                description="Complete order tracking from pickup to delivery"
+                included="All Plans"
+              />
+              <FeatureCard
+                icon={<Database className="h-6 w-6 text-green-500" />}
+                title="Customer Database"
+                description="Manage customer information and preferences"
+                included="All Plans"
+              />
+              <FeatureCard
+                icon={<Smartphone className="h-6 w-6 text-purple-500" />}
+                title="Mobile Access"
+                description="Access your dashboard from any device"
+                included="All Plans"
+              />
+              <FeatureCard
+                icon={<Lock className="h-6 w-6 text-amber-500" />}
+                title="Secure & Reliable"
+                description="Bank-level security with robust infrastructure"
+                included="All Plans"
+              />
             </div>
           </div>
 
-          {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+          {/* Add-ons */}
+          <div className="mb-12">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-[rgb(var(--foreground))] mb-3">
+                Enhance Your Plan with Add-ons
+              </h2>
+              <p className="text-base text-[rgb(var(--foreground-muted))] max-w-2xl mx-auto">
+                Need extra features or capacity? Browse our marketplace of professional add-ons to customize your plan exactly how you want it.
+              </p>
             </div>
-          ) : (
-            <>
-              {/* Pricing Slider */}
-              <div className="mb-12">
-                <PricingSlider plans={plans} billingCycle={billingCycle} />
-              </div>
-
-              {/* What's Included Section */}
-              <div className="mb-12">
-                <div className="text-center mb-8">
-                  <h2 className="text-2xl font-bold text-[rgb(var(--foreground))] mb-3">
-                    What's Included in Every Plan
-                  </h2>
-                  <p className="text-base text-[rgb(var(--foreground-muted))] max-w-2xl mx-auto">
-                    All plans include our core laundry management features. Higher plans unlock advanced capabilities.
-                  </p>
-                </div>
-
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <FeatureCard
-                    icon={<Package className="h-6 w-6 text-blue-500" />}
-                    title="Order Management"
-                    description="Complete order tracking from pickup to delivery"
-                    included="All Plans"
-                  />
-                  <FeatureCard
-                    icon={<Database className="h-6 w-6 text-green-500" />}
-                    title="Customer Database"
-                    description="Manage customer information and preferences"
-                    included="All Plans"
-                  />
-                  <FeatureCard
-                    icon={<Smartphone className="h-6 w-6 text-purple-500" />}
-                    title="Mobile Access"
-                    description="Access your dashboard from any device"
-                    included="All Plans"
-                  />
-                  <FeatureCard
-                    icon={<Lock className="h-6 w-6 text-amber-500" />}
-                    title="Secure & Reliable"
-                    description="Bank-level security with robust infrastructure"
-                    included="All Plans"
-                  />
-                </div>
-              </div>
-
-              {/* Feature Comparison Table */}
-              <div className="mb-12">
-                <FeatureComparison plans={plans} billingCycle={billingCycle} />
-              </div>
-
-              {/* Add-ons Section */}
-              <div className="mb-12">
-                <div className="text-center mb-8">
-                  <h2 className="text-2xl font-bold text-[rgb(var(--foreground))] mb-3">
-                    Enhance Your Plan with Add-ons
-                  </h2>
-                  <p className="text-base text-[rgb(var(--foreground-muted))] max-w-2xl mx-auto">
-                    Need extra features or capacity? Browse our marketplace of professional add-ons to customize your plan exactly how you want it.
-                  </p>
-                </div>
-
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                  <AddOnPreviewCard
-                    icon={<Building className="h-6 w-6 text-blue-500" />}
-                    title="Extra Branch"
-                    description="Add additional branch locations to expand your business"
-                    price="₹499/month"
-                    popular={true}
-                  />
-                  <AddOnPreviewCard
-                    icon={<Megaphone className="h-6 w-6 text-orange-500" />}
-                    title="Campaign Manager"
-                    description="Create promotional campaigns and boost customer engagement"
-                    price="₹799/month"
-                    popular={true}
-                  />
-                  <AddOnPreviewCard
-                    icon={<MessageSquare className="h-6 w-6 text-green-500" />}
-                    title="SMS Pack (1000)"
-                    description="Send SMS notifications to customers for order updates"
-                    price="₹300 one-time"
-                    popular={false}
-                  />
-                </div>
-
-                <div className="text-center">
-                  <Link href="/addons">
-                    <Button size="lg" variant="outline" className="group">
-                      Browse All Add-ons
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </>
-          )}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              <AddOnPreviewCard
+                icon={<Building className="h-6 w-6 text-blue-500" />}
+                title="Extra Branch"
+                description="Add additional branch locations to expand your business"
+                price="₹499/month"
+                popular
+              />
+              <AddOnPreviewCard
+                icon={<Megaphone className="h-6 w-6 text-orange-500" />}
+                title="Campaign Manager"
+                description="Create promotional campaigns and boost customer engagement"
+                price="₹799/month"
+                popular
+              />
+              <AddOnPreviewCard
+                icon={<MessageSquare className="h-6 w-6 text-green-500" />}
+                title="SMS Pack (1000)"
+                description="Send SMS notifications to customers for order updates"
+                price="₹300 one-time"
+                popular={false}
+              />
+            </div>
+            <div className="text-center">
+              <Link href="/addons">
+                <Button size="lg" variant="outline" className="group">
+                  Browse All Add-ons
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </Link>
+            </div>
+          </div>
 
           {/* Business Benefits */}
           <div className="mb-12">
@@ -261,7 +157,6 @@ export default function PricingPage() {
                 Experience the power of modern laundry management technology
               </p>
             </div>
-
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               <BenefitCard
                 icon={<TrendingUp className="h-6 w-6 text-green-500" />}
@@ -290,7 +185,7 @@ export default function PricingPage() {
             </div>
           </div>
 
-          {/* Enterprise Section */}
+          {/* Enterprise CTA */}
           <div className="text-center mb-12">
             <div className="bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 rounded-xl p-6">
               <h3 className="text-xl font-bold text-[rgb(var(--foreground))] mb-3">
@@ -347,10 +242,7 @@ export default function PricingPage() {
 }
 
 function FeatureCard({ icon, title, description, included }: {
-  icon: React.ReactNode
-  title: string
-  description: string
-  included: string
+  icon: React.ReactNode; title: string; description: string; included: string
 }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
@@ -365,10 +257,7 @@ function FeatureCard({ icon, title, description, included }: {
 }
 
 function BenefitCard({ icon, title, description, stat }: {
-  icon: React.ReactNode
-  title: string
-  description: string
-  stat: string
+  icon: React.ReactNode; title: string; description: string; stat: string
 }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700 text-center">
@@ -381,11 +270,7 @@ function BenefitCard({ icon, title, description, stat }: {
 }
 
 function AddOnPreviewCard({ icon, title, description, price, popular }: {
-  icon: React.ReactNode
-  title: string
-  description: string
-  price: string
-  popular: boolean
+  icon: React.ReactNode; title: string; description: string; price: string; popular: boolean
 }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
@@ -402,9 +287,7 @@ function AddOnPreviewCard({ icon, title, description, price, popular }: {
       <div className="flex items-center justify-between">
         <span className="text-sm font-bold text-primary-600 dark:text-primary-400">{price}</span>
         <Link href="/addons">
-          <Button size="sm" variant="outline">
-            View Details
-          </Button>
+          <Button size="sm" variant="outline">View Details</Button>
         </Link>
       </div>
     </div>
